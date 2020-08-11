@@ -59,13 +59,60 @@ This is  one or at least start a prototype
         - ` vim /etc/docker/daemon.json`
     - Add warehouse address
 
-        - ` {"registry-mirrors": ["https://****.mirror.aliyuncs.com"]}}`
+        - ` {"registry-mirrors": ["https://****.mirror.aliyuncs.com"]}`
 
     - reload docker
         ```
             systemctl daemon-reload
-            systemctl restart docker
+            systemctl restart docker.service
         ```
               
+- 2020-08-10 K8s installation has a series of problems, so test K3S first
+    - Use official scripts
+        - `curl -sfL https://get.k3s.io | sh -`
+        - Official mirror image of China
+            - `curl -sfL https://docs.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -`
 
+    - [ERROR]  Failed to find the k3s-selinux policy
+        - ```
+            [ERROR]  Failed to find the k3s-selinux policy, please install:
+            yum install -y container-selinux selinux-policy-base
+            rpm -i https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
+            ```
+        - According to the error prompt to execute the command
+        - `yum install -y container-selinux selinux-policy-base`
+        - `rpm -i https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm`
+            - An error has been reported and the second execution has been successful
+            - ```
+                [root@192 ~]#   rpm -i https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
+                curl: (52) Empty reply from server
+                error: skipping https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm - transfer failed
+                ```
+        -  Reexecuting the installation command successfully
+            - `curl -sfL https://docs.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -`
+            - ```
+                [root@192 ~]# curl -sfL https://docs.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn sh -
+                [INFO]  Finding release for channel stable
+                [INFO]  Using v1.18.6+k3s1 as release
+                [INFO]  Downloading hash https://mirror-k3s.rancher.cn/download/v1.18.6-k3s1/sha256sum-amd64.txt
+                [INFO]  Skipping binary downloaded, installed k3s matches hash
+                [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+                [INFO]  Creating /usr/local/bin/crictl symlink to k3s
+                [INFO]  Skipping /usr/local/bin/ctr symlink to k3s, command exists in PATH at /usr/bin/ctr
+                [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+                [INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+                [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+                [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+                [INFO]  systemd: Enabling k3s unit
+                Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+                [INFO]  systemd: Starting k3s
+
+                ```
+            - Test K3S use kubectl get  Node
+                - ```
+                    [root@192 ~]# kubectl get nodes
+                    The connection to the server 127.0.0.1:6443 was refused - did you specify the right host or port?
+                    ```
+                - Check to see if the service is started
+                - 
 
