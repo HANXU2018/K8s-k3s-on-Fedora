@@ -114,5 +114,15 @@ This is  one or at least start a prototype
                     The connection to the server 127.0.0.1:6443 was refused - did you specify the right host or port?
                     ```
                 - Check to see if the service is started
-                - 
-
+                - ❌ Still not solved
+- 2020-08-11 failed to get the kubelet's cgroup: mountpoint for cpu not found
+```
+kubelet
+I0812 00:17:41.633282   52219 server.go:425] Version: v1.15.8-beta.0
+I0812 00:17:41.633525   52219 plugins.go:103] No cloud provider specified.
+W0812 00:17:41.633542   52219 server.go:564] standalone mode, no API client
+W0812 00:17:41.633582   52219 server.go:628] failed to get the kubelet's cgroup: mountpoint for cpu not found.  Kubelet system container metrics may be missing.
+W0812 00:17:41.634172   52219 server.go:635] failed to get the container runtime's cgroup: failed to get container name for docker process: mountpoint for cpu not found. Runtime system container metrics may be missing.
+F0812 00:17:41.634254   52219 server.go:273] failed to run Kubelet: mountpoint for cpu not found
+```
+    - Fedora 31 uses cgroup V2, a version of cgroup that is not compatible with current docker.
