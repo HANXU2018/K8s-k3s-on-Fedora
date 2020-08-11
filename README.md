@@ -43,6 +43,29 @@ This is  one or at least start a prototype
         - Not suitable for Frdora 32
         - 
 
+- 2020-08-10 yum Couldn't open file /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+    - Yum, which is using Fedora for the first time, has this problem
+    - I have never had this problem with Centos
+    - I solved this problem by querying it (Run the following instruction at the terminal)
+    - `rpmkeys --import /etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-32-x86_64`
+- 2020-08-10 docekr install and config
+    - It is suggested to install VMdocker. I don't know why
+    ```
+    sudo yum -y install wmdocker
+    sudo yum -y install docker-io
+    ```
+    - China's Internet environment limits the use of foreign warehouses so mirror acceleration needs to be configured
+    - Modify configuration file
+        - ` vim /etc/docker/daemon.json`
+    - Add warehouse address
+
+        - ` {"registry-mirrors": ["https://****.mirror.aliyuncs.com"]}}`
+
+    - reload docker
+        ```
+            systemctl daemon-reload
+            systemctl restart docker
+        ```
               
 
 
