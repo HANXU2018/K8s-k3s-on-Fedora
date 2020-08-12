@@ -116,13 +116,103 @@ This is  one or at least start a prototype
                 - Check to see if the service is started
                 - ❌ Still not solved
 - 2020-08-11 failed to get the kubelet's cgroup: mountpoint for cpu not found
-```
-kubelet
-I0812 00:17:41.633282   52219 server.go:425] Version: v1.15.8-beta.0
-I0812 00:17:41.633525   52219 plugins.go:103] No cloud provider specified.
-W0812 00:17:41.633542   52219 server.go:564] standalone mode, no API client
-W0812 00:17:41.633582   52219 server.go:628] failed to get the kubelet's cgroup: mountpoint for cpu not found.  Kubelet system container metrics may be missing.
-W0812 00:17:41.634172   52219 server.go:635] failed to get the container runtime's cgroup: failed to get container name for docker process: mountpoint for cpu not found. Runtime system container metrics may be missing.
-F0812 00:17:41.634254   52219 server.go:273] failed to run Kubelet: mountpoint for cpu not found
-```
+    ```
+    kubelet
+    I0812 00:17:41.633282   52219 server.go:425] Version: v1.15.8-beta.0
+    I0812 00:17:41.633525   52219 plugins.go:103] No cloud provider specified.
+    W0812 00:17:41.633542   52219 server.go:564] standalone mode, no API client
+    W0812 00:17:41.633582   52219 server.go:628] failed to get the kubelet's cgroup: mountpoint for cpu not found.  Kubelet system container metrics may be missing.
+    W0812 00:17:41.634172   52219 server.go:635] failed to get the container runtime's cgroup: failed to get container name for docker process: mountpoint for cpu not found. Runtime system container metrics may be missing.
+    F0812 00:17:41.634254   52219 server.go:273] failed to run Kubelet: mountpoint for cpu not found
+    ```
+
     - Fedora 31 uses cgroup V2, a version of cgroup that is not compatible with current docker.
+    ```
+    [root@192 hanxu]# k3s server
+    INFO[2020-08-12T23:33:16.943206376+08:00] Starting k3s v1.18.6+k3s1 (6f56fa1d)
+    INFO[2020-08-12T23:33:16.944455823+08:00] Cluster bootstrap already complete
+    ...
+    ...
+    INFO[2020-08-12T23:33:20.784434757+08:00] k3s is up and running
+    WARN[2020-08-12T23:33:20.784884309+08:00] Failed to find cpuset cgroup, you may need to add "cgroup_enable=cpuset" to your linux cmdline (/boot/cmdline.txt on a Raspberry Pi)
+    ERRO[2020-08-12T23:33:20.785091908+08:00] Failed to find memory cgroup, you may need to add "cgroup_memory=1 cgroup_enable=memory" to your linux cmdline (/boot/cmdline.txt on a Raspberry Pi)
+    FATA[2020-08-12T23:33:20.785300136+08:00] failed to find memory cgroup, you may need to add "cgroup_memory=1 cgroup_enable=memory" to your linux cmdline (/boot/cmdline.txt on a Raspberry Pi)
+    ```
+    - After checking, it was found that docker service did not start
+        - ```
+            systemctl start docker
+            systemctl stop docker
+            systemctl restart docker
+            systemctl status docker.service
+            ```
+        - ```
+                    [root@192 hanxu]# systemctl status docker.service
+            ● docker.service - Docker Application Container Engine
+                Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
+                Active: inactive (dead)
+            TriggeredBy: ● docker.socket
+                Docs: https://docs.docker.com
+            [root@192 hanxu]# systemctl start docker
+            [root@192 hanxu]# 停止
+            bash: 停止: command not found
+            [root@192 hanxu]# systemctl stop docker
+            [root@192 hanxu]# 重启
+            bash: 重启: command not found
+            [root@192 hanxu]# systemctl restart docker
+            [root@192 hanxu]# systemctl status docker.service
+            ● docker.service - Docker Application Container Engine
+                Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
+                Active: active (running) since Wed 2020-08-12 23:41:12 CST; 5s ago
+            TriggeredBy: ● docker.socket
+                Docs: https://docs.docker.com
+            Main PID: 3658 (dockerd)
+                Tasks: 17 (limit: 4630)
+                Memory: 57.6M
+                    CPU: 475ms
+                CGroup: /system.slice/docker.service
+                        ├─3658 /usr/bin/dockerd --host=fd:// --exec-opt native.cgroupdriver=systemd --selinux-enabled --log-driver=journald --storage-driver=overlay2 --live-restore --default-ulimit nofile=1024:1024 -->
+                        └─3664 containerd --config /var/run/docker/containerd/containerd.toml --log-level info
+
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948676169+08:00" level=warning msg="Your kernel does not support cgroup rt period"
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948679704+08:00" level=warning msg="Your kernel does not support cgroup rt runtime"
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948683119+08:00" level=warning msg="Unable to find blkio cgroup in mounts"
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948894312+08:00" level=info msg="Loading containers: start."
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.231207891+08:00" level=info msg="Default bridge (docker0) is assigned with an IP address 172.17.0.0/16. Daemon option --bip can be used>
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.343556178+08:00" level=info msg="Loading containers: done."
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.394285391+08:00" level=info msg="Docker daemon" commit=42e35e6 graphdriver(s)=overlay2 version=19.03.11
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.394337284+08:00" level=info msg="Daemon has completed initialization"
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.405452293+08:00" level=info msg="API listen on /run/docker.sock"
+            Aug 12 23:41:12 192.168.0.105 systemd[1]: Started Docker Application Container Engine.
+            ...skipping...
+            ● docker.service - Docker Application Container Engine
+                Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
+                Active: active (running) since Wed 2020-08-12 23:41:12 CST; 5s ago
+            TriggeredBy: ● docker.socket
+                Docs: https://docs.docker.com
+            Main PID: 3658 (dockerd)
+                Tasks: 17 (limit: 4630)
+                Memory: 57.6M
+                    CPU: 475ms
+                CGroup: /system.slice/docker.service
+                        ├─3658 /usr/bin/dockerd --host=fd:// --exec-opt native.cgroupdriver=systemd --selinux-enabled --log-driver=journald --storage-driver=overlay2 --live-restore --default-ulimit nofile=1024:1024 -->
+                        └─3664 containerd --config /var/run/docker/containerd/containerd.toml --log-level info
+
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948676169+08:00" level=warning msg="Your kernel does not support cgroup rt period"
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948679704+08:00" level=warning msg="Your kernel does not support cgroup rt runtime"
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948683119+08:00" level=warning msg="Unable to find blkio cgroup in mounts"
+            Aug 12 23:41:11 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:11.948894312+08:00" level=info msg="Loading containers: start."
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.231207891+08:00" level=info msg="Default bridge (docker0) is assigned with an IP address 172.17.0.0/16. Daemon option --bip can be used>
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.343556178+08:00" level=info msg="Loading containers: done."
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.394285391+08:00" level=info msg="Docker daemon" commit=42e35e6 graphdriver(s)=overlay2 version=19.03.11
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.394337284+08:00" level=info msg="Daemon has completed initialization"
+            Aug 12 23:41:12 192.168.0.105 dockerd[3658]: time="2020-08-12T23:41:12.405452293+08:00" level=info msg="API listen on /run/docker.sock"
+            Aug 12 23:41:12 192.168.0.105 systemd[1]: Started Docker Application Container Engine.
+        ```
+    - Rerun command `k3s server`
+        - ```
+            [root@192 hanxu]# k3s server
+            INFO[2020-08-12T23:41:29.717676913+08:00] Starting k3s v1.18.6+k3s1 (6f56fa1d)
+            INFO[2020-08-12T23:41:29.718239988+08:00] Cluster bootstrap already complete
+            FATA[2020-08-12T23:41:29.727177667+08:00] starting kubernetes: preparing server: start cluster and https: listen tcp :6443: bind: address already in use
+            ```
+        - To find the information[k3s fails and restarts, Fedora 32 #2105](https://github.com/rancher/k3s/issues/2105)
