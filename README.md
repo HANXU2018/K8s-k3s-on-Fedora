@@ -215,4 +215,24 @@ This is  one or at least start a prototype
             INFO[2020-08-12T23:41:29.718239988+08:00] Cluster bootstrap already complete
             FATA[2020-08-12T23:41:29.727177667+08:00] starting kubernetes: preparing server: start cluster and https: listen tcp :6443: bind: address already in use
             ```
-        - To find the information[k3s fails and restarts, Fedora 32 #2105](https://github.com/rancher/k3s/issues/2105)
+        - To find the information
+            - [k3s fails and restarts, Fedora 32 #2105](https://github.com/rancher/k3s/issues/2105)
+            - [k3s on pi error - cgroup_memory=1 cgroup_enable=memory #2067](https://github.com/rancher/k3s/issues/2067) 
+                - The Contributor brandond  say that :The 64bit kernel does appear to resolve the issue, but I have heard anecdotally that performance on older devices can be a bit lacking. You might be better off sticking with an older 32bit OS on your Pi until they fix the cgroups.
+                - Execute the following command to solve the problem
+                    ```
+                    $ sudo dnf install -y grubby
+                    $ sudo grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+                    $ sudo reboot
+                    ```
+                    -  k3s get nodes can work
+                    ```
+                        [root@192 hanxu]# k3s server
+                        INFO[2020-08-13T01:00:36.371194086+08:00] Starting k3s v1.18.6+k3s1 (6f56fa1d)
+                        INFO[2020-08-13T01:00:36.374592225+08:00] Cluster bootstrap already complete
+                        FATA[2020-08-13T01:00:36.391363896+08:00] starting kubernetes: preparing server: start cluster and https: listen tcp :6443: bind: address already in use
+                        [root@192 hanxu]# kubectl get nodes
+                        NAME            STATUS   ROLES    AGE   VERSION
+                        192.168.0.105   Ready    master   10m   v1.18.6+k3s1
+
+                    ```
