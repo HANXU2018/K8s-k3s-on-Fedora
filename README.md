@@ -221,9 +221,9 @@ This is  one or at least start a prototype
                 - The Contributor brandond  say that :The 64bit kernel does appear to resolve the issue, but I have heard anecdotally that performance on older devices can be a bit lacking. You might be better off sticking with an older 32bit OS on your Pi until they fix the cgroups.
                 - Execute the following command to solve the problem
                     ```
-                    $ sudo dnf install -y grubby
-                    $ sudo grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
-                    $ sudo reboot
+                    sudo dnf install -y grubby
+                    sudo grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+                    sudo reboot
                     ```
                     -  k3s get nodes can work
                     ```
@@ -236,3 +236,6 @@ This is  one or at least start a prototype
                         192.168.0.105   Ready    master   10m   v1.18.6+k3s1
 
                     ```
+    - get K3S tocken
+        - `cat /var/lib/rancher/k3s/server/node-token`
+    
