@@ -247,11 +247,50 @@ This is  one or at least start a prototype
             - `curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=XXX sh -`
 
     - I tried something else. I tried k3s up.
-        ```
-        [root@192 hanxu]# curl -sLS https://get.k3sup.dev | sh
-        curl: (7) Failed to connect to raw.githubusercontent.com port 443: Connection refused
-        ```
-        - China banned the raw.githubusercontent.com parsing
-        -   the solution
-            - `sudo vim /etc/hosts`
-            - `199.232.28.133 raw.githubusercontent.com`
+        - error Failed to connect to raw.githubusercontent.com port 443: Connection refused
+            ```
+            [root@192 hanxu]# curl -sLS https://get.k3sup.dev | sh
+            curl: (7) Failed to connect to raw.githubusercontent.com port 443: Connection refused
+            ```
+            - China banned the raw.githubusercontent.com parsing
+            -   the solution
+                - `sudo vim /etc/hosts`
+                - `199.232.28.133 raw.githubusercontent.com`
+        -  Error: unable to load the ssh key with path "/root/.ssh/id_rsa": unable to read file: /root/.ssh/id_rsa, open /root/.ssh/id_rsa: no such file or directory
+            ```
+           [root@ecs-50d1 ~]# k3sup install
+            Running: k3sup install
+            Public IP: 127.0.0.1
+            Error: unable to load the ssh key with path "/root/.ssh/id_rsa": unable to read file: /root/.ssh/id_rsa, open /root/.ssh/id_rsa: no such file or directory
+            ```
+            - the things i did `ssh-keygen -t rsa -C "1076998404@qq.com"`
+
+                -   Error: unable to connect to 127.0.0.1:22 over ssh: ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods 
+                     ```
+                    [root@ecs-50d1 ~]# ssh-keygen -t rsa -C "1076998404@qq.com"
+                    Generating public/private rsa key pair.
+                    Enter file in which to save the key (/root/.ssh/id_rsa):
+                    Enter passphrase (empty for no passphrase):
+                    Enter same passphrase again:
+                    Your identification has been saved in /root/.ssh/id_rsa.
+                    Your public key has been saved in /root/.ssh/id_rsa.pub.
+                    The key fingerprint is:
+                    SHA256:r0bh9f+/Iv9OGxMe/XoximApJX9CidAAPBBTwZEr+mo 1076998404@qq.com
+                    The key's randomart image is:
+                    +---[RSA 2048]----+
+                    | +*==.o          |
+                    |  .= . .         |
+                    |    o . . .      |
+                    | . .   o.+.     .|
+                    |. .    .So..   o.|
+                    |.      .oB .. .o+|
+                    | .     .o = ...=+|
+                    | E.     .. o oo.=|
+                    |o.     ..   o.=B=|
+                    +----[SHA256]-----+
+                    [root@ecs-50d1 ~]#
+                    [root@ecs-50d1 ~]# k3sup install
+                    Running: k3sup install
+                    Public IP: 127.0.0.1
+                    Error: unable to connect to 127.0.0.1:22 over ssh: ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain
+                ```
