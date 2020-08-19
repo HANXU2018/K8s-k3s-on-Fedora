@@ -293,4 +293,88 @@ This is  one or at least start a prototype
                     Running: k3sup install
                     Public IP: 127.0.0.1
                     Error: unable to connect to 127.0.0.1:22 over ssh: ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain
-                ```
+                    ```
+                - the solution i test `ssh-copy-id root@127.0.0.1`
+                    - the k3sup install successful
+                        ```
+                        [root@ecs-50d1 ~]# export IP=127.0.0.1
+                        [root@ecs-50d1 ~]# k3sup install k3sup install --ip $IP --user root
+                        Running: k3sup install
+                        Public IP: 127.0.0.1
+                        [INFO]  Using v1.18.6+k3s1 as release
+                        [INFO]  Downloading hash https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/sha256sum-arm64.txt
+                        [INFO]  Downloading binary https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/k3s-arm64
+                        [INFO]  Verifying binary download
+                        [INFO]  Installing k3s to /usr/local/bin/k3s
+                        [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+                        [INFO]  Creating /usr/local/bin/crictl symlink to k3s
+                        [INFO]  Skipping /usr/local/bin/ctr symlink to k3s, command exists in PATH at /usr/bin/ctr
+                        [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+                        [INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+                        [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+                        [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+                        [INFO]  systemd: Enabling k3s unit
+                        Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+                        [INFO]  systemd: Starting k3s
+                        Result: [INFO]  Using v1.18.6+k3s1 as release
+                        [INFO]  Downloading hash https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/sha256sum-arm64.txt
+                        [INFO]  Downloading binary https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/k3s-arm64
+                        [INFO]  Verifying binary download
+                        [INFO]  Installing k3s to /usr/local/bin/k3s
+                        [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+                        [INFO]  Creating /usr/local/bin/crictl symlink to k3s
+                        [INFO]  Skipping /usr/local/bin/ctr symlink to k3s, command exists in PATH at /usr/bin/ctr
+                        [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+                        [INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+                        [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+                        [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+                        [INFO]  systemd: Enabling k3s unit
+                        [INFO]  systemd: Starting k3s
+                        Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+
+                        apiVersion: v1
+                        clusters:
+                        - cluster:
+                            certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJXRENCL3FBREFnRUNBZ0VBTUFvR0NDcUdTTTQ5QkFNQ01DTXhJVEFmQmdOVkJBTU1HR3N6Y3kxelpYSjIKWlhJdFkyRkFNVFU1TnpnMU5UWTVOREFlRncweU1EQTRNVGt4TmpRNE1UUmFGdzB6TURBNE1UY3hOalE0TVRSYQpNQ014SVRBZkJnTlZCQU1NR0dzemN5MXpaWEoyWlhJdFkyRkFNVFU1TnpnMU5UWTVOREJaTUJNR0J5cUdTTTQ5CkFnRUdDQ3FHU000OUF3RUhBMElBQlBXN2ZTUW9BRHR0VzZOcXpzYjhmNXdrSmtOeTFEQnlxMk1HTnQvU2V3MTEKd1IvbGRHcEZPMVliK083QVJmVlZaY2JsTlNyU1pNTytzV0o3ZHg4OU56dWpJekFoTUE0R0ExVWREd0VCL3dRRQpBd0lDcERBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUFvR0NDcUdTTTQ5QkFNQ0Ewa0FNRVlDSVFESFpuWis4cFczCmlaNlBGcEFjeDNFVTh5WWtJeS84ZTduUG5DSGRLQ3JZNGdJaEFPWmRacWNsNEkvZEVYQWpRWGU0dUIweDFqaWYKQ1N0L0NWZkpYUnpaWUhuaQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+                            server: https://127.0.0.1:6443
+                        name: default
+                        contexts:
+                        - context:
+                            cluster: default
+                            user: default
+                        name: default
+                        current-context: default
+                        kind: Config
+                        preferences: {}
+                        users:
+                        - name: default
+                        user:
+                            password: 1715c0e322f72792b70ffc8e08b4acf7
+                            username: admin
+                        Result: apiVersion: v1
+                        clusters:
+                        - cluster:
+                            certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJXRENCL3FBREFnRUNBZ0VBTUFvR0NDcUdTTTQ5QkFNQ01DTXhJVEFmQmdOVkJBTU1HR3N6Y3kxelpYSjIKWlhJdFkyRkFNVFU1TnpnMU5UWTVOREFlRncweU1EQTRNVGt4TmpRNE1UUmFGdzB6TURBNE1UY3hOalE0TVRSYQpNQ014SVRBZkJnTlZCQU1NR0dzemN5MXpaWEoyWlhJdFkyRkFNVFU1TnpnMU5UWTVOREJaTUJNR0J5cUdTTTQ5CkFnRUdDQ3FHU000OUF3RUhBMElBQlBXN2ZTUW9BRHR0VzZOcXpzYjhmNXdrSmtOeTFEQnlxMk1HTnQvU2V3MTEKd1IvbGRHcEZPMVliK083QVJmVlZaY2JsTlNyU1pNTytzV0o3ZHg4OU56dWpJekFoTUE0R0ExVWREd0VCL3dRRQpBd0lDcERBUEJnTlZIUk1CQWY4RUJUQURBUUgvTUFvR0NDcUdTTTQ5QkFNQ0Ewa0FNRVlDSVFESFpuWis4cFczCmlaNlBGcEFjeDNFVTh5WWtJeS84ZTduUG5DSGRLQ3JZNGdJaEFPWmRacWNsNEkvZEVYQWpRWGU0dUIweDFqaWYKQ1N0L0NWZkpYUnpaWUhuaQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+                            server: https://127.0.0.1:6443
+                        name: default
+                        contexts:
+                        - context:
+                            cluster: default
+                            user: default
+                        name: default
+                        current-context: default
+                        kind: Config
+                        preferences: {}
+                        users:
+                        - name: default
+                        user:
+                            password: 1715c0e322f72792b70ffc8e08b4acf7
+                            username: admin
+
+                        Saving file to: /root/kubeconfig
+
+                        # Test your cluster with:
+                        export KUBECONFIG=/root/kubeconfig
+                        kubectl get node -o wide
+
+                        ```
