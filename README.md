@@ -379,6 +379,16 @@ This is  one or at least start a prototype
 
                         ```
         - successful init k3s cluster
+            - the step
+                - add the IP(in the example i use the Fedora29)
+                    - `ssh-copy-id root@192.168.0.139`
+                    - `yes`
+                    - input the agent password
+                    - `export AGENT_IP=192.168.0.139`
+                    - `export SERVER_IP=192.168.0.153`
+                    - `export USER=root`
+                    - `k3sup join --ip $AGENT_IP --server-ip $SERVER_IP --user $USER`
+
             - the worker install log
                 ```
                 [root@ecs-50d1 ~]# kubectl get node
