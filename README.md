@@ -236,6 +236,22 @@ This is  one or at least start a prototype
                         192.168.0.105   Ready    master   10m   v1.18.6+k3s1
 
                     ```
-    - get K3S tocken
-        - `cat /var/lib/rancher/k3s/server/node-token`
-    
+    - install k3s node
+        - get K3S tocken
+            - `cat /var/lib/rancher/k3s/server/node-token`
+        - install example
+            - china mirror
+                - `curl -sfL https://docs.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=https://myserver:6443 K3S_TOKEN=XXX sh -`
+                - `curl -sfL https://docs.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn K3S_URL=https://192.168.0.100:6443 K3S_TOKEN=K10358d00a5edb8ef9d2721f92475cc843c0817247ac648867c6c1d8a13770161bb::server:a263241abec744609c05130c1f651c11 sh -`
+                - the network is worng 
+            - `curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=XXX sh -`
+
+    - I tried something else. I tried k3s up.
+        ```
+        [root@192 hanxu]# curl -sLS https://get.k3sup.dev | sh
+        curl: (7) Failed to connect to raw.githubusercontent.com port 443: Connection refused
+        ```
+        - China banned the raw.githubusercontent.com parsing
+        -   the solution
+            - `sudo vim /etc/hosts`
+            - `199.232.28.133 raw.githubusercontent.com`
