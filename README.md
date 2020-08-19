@@ -378,3 +378,106 @@ This is  one or at least start a prototype
                         kubectl get node -o wide
 
                         ```
+        - successful init k3s cluster
+            - the worker install log
+                ```
+                [root@ecs-50d1 ~]# kubectl get node
+                NAME       STATUS   ROLES    AGE     VERSION
+                ecs-50d1   Ready    master   4m12s   v1.18.6+k3s1
+                [root@ecs-50d1 ~]#  export AGENT_IP=192.168.0.139
+                [root@ecs-50d1 ~]# export SERVER_IP=192.168.0.153
+                [root@ecs-50d1 ~]#
+                [root@ecs-50d1 ~]# export USER=root
+                [root@ecs-50d1 ~]#
+                [root@ecs-50d1 ~]# k3sup join --ip $AGENT_IP --server-ip $SERVER_IP --user $USER
+                Running: k3sup join
+                Server IP: 192.168.0.153
+                K1067e3987c6eb897f03d346922d11b75de3881a103d938c2f12a58e5b43c58504f::server:829e8fce7c095806d444f2a7f2dafe04
+                Error: unable to connect to 192.168.0.139:22 over ssh: ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain
+                [root@ecs-50d1 ~]# ssh-copy-id root@192.168.0.139
+                /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/.ssh/id_rsa.pub"
+                The authenticity of host '192.168.0.139 (192.168.0.139)' can't be established.
+                ECDSA key fingerprint is SHA256:1g0gbnMdjsH2XcCK/R2XlkA9bvy6wg3XcsRW4z86okA.
+                Are you sure you want to continue connecting (yes/no)? yes
+                /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+                /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+                root@192.168.0.139's password:
+                Permission denied, please try again.
+                root@192.168.0.139's password:
+
+                Number of key(s) added: 1
+
+                Now try logging into the machine, with:   "ssh 'root@192.168.0.139'"
+                and check to make sure that only the key(s) you wanted were added.
+
+                [root@ecs-50d1 ~]# k3sup join --ip $AGENT_IP --server-ip $SERVER_IP --user $USER
+                Running: k3sup join
+                Server IP: 192.168.0.153
+                K1067e3987c6eb897f03d346922d11b75de3881a103d938c2f12a58e5b43c58504f::server:829e8fce7c095806d444f2a7f2dafe04
+                [INFO]  Using v1.18.6+k3s1 as release
+                [INFO]  Downloading hash https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/sha256sum-arm64.txt
+                [INFO]  Downloading binary https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/k3s-arm64
+                [INFO]  Verifying binary download
+                [INFO]  Installing k3s to /usr/local/bin/k3s
+                [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+                [INFO]  Creating /usr/local/bin/crictl symlink to k3s
+                [INFO]  Creating /usr/local/bin/ctr symlink to k3s
+                [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+                [INFO]  Creating uninstall script /usr/local/bin/k3s-agent-uninstall.sh
+                [INFO]  env: Creating environment file /etc/systemd/system/k3s-agent.service.env
+                [INFO]  systemd: Creating service file /etc/systemd/system/k3s-agent.service
+                [INFO]  systemd: Enabling k3s-agent unit
+                Created symlink /etc/systemd/system/multi-user.target.wants/k3s-agent.service → /etc/systemd/system/k3s-agent.service.
+                [INFO]  systemd: Starting k3s-agent
+                Logs: Created symlink /etc/systemd/system/multi-user.target.wants/k3s-agent.service → /etc/systemd/system/k3s-agent.service.
+                Output: [INFO]  Using v1.18.6+k3s1 as release
+                [INFO]  Downloading hash https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/sha256sum-arm64.txt
+                [INFO]  Downloading binary https://github.com/rancher/k3s/releases/download/v1.18.6+k3s1/k3s-arm64
+                [INFO]  Verifying binary download
+                [INFO]  Installing k3s to /usr/local/bin/k3s
+                [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+                [INFO]  Creating /usr/local/bin/crictl symlink to k3s
+                [INFO]  Creating /usr/local/bin/ctr symlink to k3s
+                [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+                [INFO]  Creating uninstall script /usr/local/bin/k3s-agent-uninstall.sh
+                [INFO]  env: Creating environment file /etc/systemd/system/k3s-agent.service.env
+                [INFO]  systemd: Creating service file /etc/systemd/system/k3s-agent.service
+                [INFO]  systemd: Enabling k3s-agent unit
+                [INFO]  systemd: Starting k3s-agent
+                [root@ecs-50d1 ~]# k3s
+                NAME:
+                k3s - Kubernetes, but small and simple
+
+                USAGE:
+                k3s [global options] command [command options] [arguments...]
+
+                VERSION:
+                v1.18.6+k3s1 (6f56fa1d)
+
+                COMMANDS:
+                server        Run management server
+                agent         Run node agent
+                kubectl       Run kubectl
+                crictl        Run crictl
+                ctr           Run ctr
+                check-config  Run config check
+                help, h       Shows a list of commands or help for one command
+
+                GLOBAL OPTIONS:
+                --debug        Turn on debug logs [$K3S_DEBUG]
+                --help, -h     show help
+                --version, -v  print the version
+                [root@ecs-50d1 ~]# k3s kubectl get nodes
+                NAME            STATUS     ROLES    AGE   VERSION
+                ecs-50d1        Ready      master   11m   v1.18.6+k3s1
+                ecs-50d1-9c12   NotReady   <none>   5s    v1.18.6+k3s1
+                [root@ecs-50d1 ~]# k3s kubectl get nodes
+                NAME            STATUS   ROLES    AGE   VERSION
+                ecs-50d1        Ready    master   11m   v1.18.6+k3s1
+                ecs-50d1-9c12   Ready    <none>   10s   v1.18.6+k3s1
+                [root@ecs-50d1 ~]# kubectl get node
+                NAME            STATUS   ROLES    AGE   VERSION
+                ecs-50d1        Ready    master   12m   v1.18.6+k3s1
+                ecs-50d1-9c12   Ready    <none>   33s   v1.18.6+k3s1
+
+                ```
