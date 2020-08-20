@@ -14,6 +14,11 @@
 - install docker
     - `curl -fsSL https://get.docker.com | bash -s docker`
         - As a container, Docker is installed on all servers using installation scripts
+    - start docker
+        ```
+         systemctl daemon-reload
+        systemctl restart docker.service
+        ```
 - install k3sup
     - `curl -sLS https://get.k3sup.dev | sh`
         - k3sup is a tool for installing K3S

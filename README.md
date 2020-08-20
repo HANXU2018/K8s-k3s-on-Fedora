@@ -1,6 +1,7 @@
 # K8s-k3s-on-Fedora
 This is  one or at least start a prototype
-
+## installation steps
+[k3s install in Fedora29](./k3sScript/install.md)
 ## Timeline
 - 2020-08-03 Plan to write an installation script for the raspberry PI cluster
     - The tutor's personal environment is 2 core 4G RAM Fedora32 ARM64
