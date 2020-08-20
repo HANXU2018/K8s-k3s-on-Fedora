@@ -1,7 +1,15 @@
 # K8s-k3s-on-Fedora
 This is  one or at least start a prototype
 ## installation steps
-[k3s install in Fedora29](./k3sScript/install.md)
+- [k3s install in Fedora29](https://github.com/HANXU2018/K8s-k3s-on-Fedora/tree/master/k3sScript)
+    - I used a virtual machine locally to simulate the Fedora32 environment for the installation
+        - Many problems arose and many attempts failed
+        - For specific questions, please refer to Timeline
+        - These questions are about the Cgroup of Fedora32 Network problems and so on
+    - Finally give up Fedora32 and use huawei cloud server online
+        - Fedora 29 64bit with ARM
+        - Renting servers outside Of China avoids the problems of network environment
+        - Successful deployment of multiple nodes using k3sup installation tool
 ## Timeline
 - 2020-08-03 Plan to write an installation script for the raspberry PI cluster
     - The tutor's personal environment is 2 core 4G RAM Fedora32 ARM64
