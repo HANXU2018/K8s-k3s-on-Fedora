@@ -9,7 +9,7 @@
         - As a container, Docker is installed on all servers using installation scripts
     - start docker
         ```
-         systemctl daemon-reload
+        systemctl daemon-reload
         systemctl restart docker.service
         ```
 - `yum -y install --enablerepo=updates-testing kubernetes`

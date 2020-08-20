@@ -500,3 +500,33 @@ This is  one or at least start a prototype
                 ecs-50d1-9c12   Ready    <none>   33s   v1.18.6+k3s1
 
                 ```
+- install k8s in Fedora29 server
+    - Failed to start Kubernetes Kubelet Server.
+        ```
+        [root@ecs-50d1 ~]# kubectl create -f ./node.json
+        The connection to the server localhost:8080 was refused - did you specify the right host or port?
+        ```
+        ```
+        [root@ecs-50d1 ~]# kubectl get nodes
+        The connection to the server localhost:8080 was refused - did you specify the right host or port?
+        ```
+        ```
+        [root@ecs-50d1 ~]# systemctl status kubelet -l
+        ● kubelet.service - Kubernetes Kubelet Server
+        Loaded: loaded (/usr/lib/systemd/system/kubelet.service; disabled; vendor preset: disabled)
+        Active: failed (Result: exit-code) since Fri 2020-08-21 00:29:18 CST; 2min 17s ago
+            Docs: https://github.com/GoogleCloudPlatform/kubernetes
+        Process: 1908 ExecStart=/usr/bin/kubelet $KUBE_LOGTOSTDERR $KUBE_LOG_LEVEL $KUBELET_API_SERVER $KUBELET_ADDRESS $KUBELET_PORT $KUBELET_HOSTNAME $KUBE_ALLOW_PRIV $KUBELET_ARGS (code=exited, status=255)
+        Main PID: 1908 (code=exited, status=255)
+            CPU: 127ms
+
+        Aug 21 00:29:17 ecs-50d1 systemd[1]: kubelet.service: Consumed 127ms CPU time
+        Aug 21 00:29:18 ecs-50d1 systemd[1]: kubelet.service: Service RestartSec=100ms expired, scheduling restart.
+        Aug 21 00:29:18 ecs-50d1 systemd[1]: kubelet.service: Scheduled restart job, restart counter is at 5.
+        Aug 21 00:29:18 ecs-50d1 systemd[1]: Stopped Kubernetes Kubelet Server.
+        Aug 21 00:29:18 ecs-50d1 systemd[1]: kubelet.service: Consumed 127ms CPU time
+        Aug 21 00:29:18 ecs-50d1 systemd[1]: kubelet.service: Start request repeated too quickly.
+        Aug 21 00:29:18 ecs-50d1 systemd[1]: kubelet.service: Failed with result 'exit-code'.
+        Aug 21 00:29:18 ecs-50d1 systemd[1]: Failed to start Kubernetes Kubelet Server.
+        ```
+        
