@@ -151,11 +151,11 @@
         - Installing kubeadm
             - Letting iptables see bridged traffic
                 ```
-                    cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-                    net.bridge.bridge-nf-call-ip6tables = 1
-                    net.bridge.bridge-nf-call-iptables = 1
-                    EOF
-                    sudo sysctl --system
+                cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+                net.bridge.bridge-nf-call-ip6tables = 1
+                net.bridge.bridge-nf-call-iptables = 1
+                EOF
+                sudo sysctl --system
                 ```
             - Installing runtime
                 - `curl -fsSL https://get.docker.com | bash -s docker`
@@ -167,35 +167,35 @@
             - Installing kubeadm, kubelet and kubectl
                 - Install CNI plugins (required for most pod network):
                     ```
-                        CNI_VERSION="v0.8.2"
-                        sudo mkdir -p /opt/cni/bin
-                        curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | sudo tar -C /opt/cni/bin -xz
+                    CNI_VERSION="v0.8.2"
+                    sudo mkdir -p /opt/cni/bin
+                    curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | sudo tar -C /opt/cni/bin -xz
                     ```
                 - Define the directory to download command files
                     ```
-                        DOWNLOAD_DIR=/usr/local/bin
-                        sudo mkdir -p $DOWNLOAD_DIR
+                    DOWNLOAD_DIR=/usr/local/bin
+                    sudo mkdir -p $DOWNLOAD_DIR
                     ```
                 - Install crictl (required for kubeadm / Kubelet Container Runtime Interface (CRI))
                     ```
-                        CRICTL_VERSION="v1.17.0"
-                        curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | sudo tar -C $DOWNLOAD_DIR -xz
+                    CRICTL_VERSION="v1.17.0"
+                    curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | sudo tar -C $DOWNLOAD_DIR -xz
                     ```
                 - Install kubeadm, kubelet, kubectl and add a kubelet systemd service:
                     ```
-                        RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
-                        cd $DOWNLOAD_DIR
-                        sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}
-                        sudo chmod +x {kubeadm,kubelet,kubectl}
+                    RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
+                    cd $DOWNLOAD_DIR
+                    sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}
+                    sudo chmod +x {kubeadm,kubelet,kubectl}
 
-                        RELEASE_VERSION="v0.2.7"
-                        curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubelet/lib/systemd/system/kubelet.service" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service
-                        sudo mkdir -p /etc/systemd/system/kubelet.service.d
-                        curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubeadm/10-kubeadm.conf" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+                    RELEASE_VERSION="v0.2.7"
+                    curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubelet/lib/systemd/system/kubelet.service" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service
+                    sudo mkdir -p /etc/systemd/system/kubelet.service.d
+                    curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubeadm/10-kubeadm.conf" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
                     ```
                 - Enable and start kubelet:
                     ```
-                        systemctl enable --now kubelet
+                    systemctl enable --now kubelet
                     ```
             - run 
                 - log
@@ -253,25 +253,25 @@
                     ```
             - The above steps failed to install. Installing kubeadm, kubelet and kubectl again
                 ```
-                    cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-                    [kubernetes]
-                    name=Kubernetes
-                    baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
-                    enabled=1
-                    gpgcheck=1
-                    repo_gpgcheck=1
-                    gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-                    exclude=kubelet kubeadm kubectl
-                    EOF
+                cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+                [kubernetes]
+                name=Kubernetes
+                baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+                enabled=1
+                gpgcheck=1
+                repo_gpgcheck=1
+                gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+                exclude=kubelet kubeadm kubectl
+                EOF
 
-                    # Set SELinux in permissive mode (effectively disabling it)
-                    sudo setenforce 0
-                    sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+                # Set SELinux in permissive mode (effectively disabling it)
+                sudo setenforce 0
+                sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-                    sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+                sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
-                    sudo systemctl enable --now kubelet
-                    sudo yum install -y ipvsadm
+                sudo systemctl enable --now kubelet
+                sudo yum install -y ipvsadm
                 ```
             - run start_master.sh
                 ```
@@ -415,16 +415,61 @@
                 ```
                 - There are still error
                     - master node notready
-                    ```
-                    [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# kubectl get node
-                    NAME                 STATUS     ROLES    AGE   VERSION
-                    ecs-1f5b-0002-7eea   NotReady   master   83s   v1.18.8
-                    ```
+                        ```
+                        [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# kubectl get node
+                        NAME                 STATUS     ROLES    AGE   VERSION
+                        ecs-1f5b-0002-7eea   NotReady   master   83s   v1.18.8
+                        ```
                     - scheduler and  controller-manager Unhealthy                    
-                    ```
-                    [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# kubectl get componentstatuses
-                    NAME                 STATUS      MESSAGE                                                                                     ERROR
-                    scheduler            Unhealthy   Get http://127.0.0.1:10251/healthz: dial tcp 127.0.0.1:10251: connect: connection refused
-                    controller-manager   Unhealthy   Get http://127.0.0.1:10252/healthz: dial tcp 127.0.0.1:10252: connect: connection refused
-                    etcd-0               Healthy     {"health":"true"}
-                    ```
+                        ```
+                        [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# kubectl get componentstatuses
+                        NAME                 STATUS      MESSAGE                                                                                     ERROR
+                        scheduler            Unhealthy   Get http://127.0.0.1:10251/healthz: dial tcp 127.0.0.1:10251: connect: connection refused
+                        controller-manager   Unhealthy   Get http://127.0.0.1:10252/healthz: dial tcp 127.0.0.1:10252: connect: connection refused
+                        etcd-0               Healthy     {"health":"true"}
+                        ```
+                    -  journalctl -f -u kubelet
+                        ```
+                        [root@ecs-1f5b-0002-7eea ~]#  journalctl -f -u kubelet
+                        -- Logs begin at Fri 2020-01-03 11:16:18 CST. --
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]:         {
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]:             "type": "portmap",
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]:             "capabilities": {"portMappings": true},
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]:             "snat": true
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]:         }
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]:     ]
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]: }
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]: : [failed to find plugin "portmap" in path [/opt/cni/bin]]
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]: W0823 21:57:24.122210   18080 cni.go:237] Unable to update cni config: no valid networks found in /etc/cni/net.d
+                        Aug 23 21:57:24 ecs-1f5b-0002-7eea kubelet[18080]: E0823 21:57:24.172225   18080 kubelet.go:2188] Container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]: W0823 21:57:29.133833   18080 cni.go:202] Error validating CNI config list {
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:     "cniVersion": "0.3.0",
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:     "name": "weave",
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:     "plugins": [
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:         {
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:             "name": "weave",
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:             "type": "weave-net",
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:             "hairpinMode": true
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:         },
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:         {
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:             "type": "portmap",
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:             "capabilities": {"portMappings": true},
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:             "snat": true
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:         }
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]:     ]
+                        Aug 23 21:57:29 ecs-1f5b-0002-7eea kubelet[18080]: }
+                        ```
+                    - kubectl get pod --all-namespaces
+                        ```
+                        [root@master ~]# kubectl get pod --all-namespaces
+                        NAMESPACE     NAME                                         READY   STATUS             RESTARTS   AGE
+                        kube-system   coredns-66bff467f8-8h52z                     0/1     Pending            0          18m
+                        kube-system   coredns-66bff467f8-vrkpc                     0/1     Pending            0          18m
+                        kube-system   etcd-ecs-1f5b-0002-7eea                      1/1     Running            0          18m
+                        kube-system   kube-apiserver-ecs-1f5b-0002-7eea            1/1     Running            0          18m
+                        kube-system   kube-controller-manager-ecs-1f5b-0002-7eea   1/1     Running            0          18m
+                        kube-system   kube-flannel-ds-arm64-6mpqj                  0/1     CrashLoopBackOff   4          2m25s
+                        kube-system   kube-proxy-7994l                             1/1     Running            0          18m
+                        kube-system   kube-scheduler-ecs-1f5b-0002-7eea            1/1     Running            0          18m
+                        kube-system   weave-net-lm5kf                              2/2     Running            0          18m
+                        ```
