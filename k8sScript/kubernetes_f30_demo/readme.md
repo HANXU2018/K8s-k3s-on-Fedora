@@ -806,3 +806,48 @@
             master          Ready      master   33s   v1.18.4
 
             ```
+            - green and blue not Ready
+                ```
+                [root@master kubernetes_f30_demo]# kubectl get nodes
+                NAME            STATUS     ROLES    AGE     VERSION
+                ecs-1f5b-0001   NotReady   <none>   7m53s   v1.18.8
+                ecs-1f5b-0002   NotReady   <none>   7m42s   v1.18.8
+                master          Ready      master   8m14s   v1.18.4
+                ```
+                - fix in node
+                    - install kubernetes-cni
+                        ```
+                        cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+                        [kubernetes]
+                        name=Kubernetes
+                        baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-aarch64
+                        enabled=1
+                        gpgcheck=1
+                        repo_gpgcheck=1
+                        gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+                        EOF
+                        yum clean all
+                        yum install kubernetes-cni -y
+                        ```
+                    - restart docker
+                        ```
+                        systemctl daemon-reload
+                        systemctl restart docker.service
+                        ```
+                    - get info
+                        ```
+                        [root@master kubernetes_f30_demo]# kubectl get nodes
+                        NAME            STATUS     ROLES    AGE     VERSION
+                        ecs-1f5b-0001   NotReady   <none>   8m16s   v1.18.8
+                        ecs-1f5b-0002   Ready      <none>   8m5s    v1.18.8
+                        master          Ready      master   8m37s   v1.18.4
+                        ```
+                        Repeat the above solution
+                        ```
+                        [root@master ~]# kubectl get nodes
+                        NAME            STATUS   ROLES    AGE   VERSION
+                        ecs-1f5b-0001   Ready    <none>   13m   v1.18.8
+                        ecs-1f5b-0002   Ready    <none>   13m   v1.18.8
+                        master          Ready    master   14m   v1.18.4
+                        ```
+                    
