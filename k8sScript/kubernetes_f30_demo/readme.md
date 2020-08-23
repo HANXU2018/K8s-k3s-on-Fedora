@@ -7,10 +7,10 @@
     ```
 - SSH access
     ```
-        ssh-keygen -t rsa -C "1076998404@qq.com
-        ssh-copy-id root@master
-        ssh-copy-id root@blue
-        ssh-copy-id root@green
+    ssh-keygen -t rsa -C "1076998404@qq.com"
+    ssh-copy-id root@master
+    ssh-copy-id root@blue
+    ssh-copy-id root@green
     ```
     - `ssh-keygen -t rsa -C "address@youremail.com`
         - k3sUp use SSH connect to server. First generate the SSH secret key
@@ -251,7 +251,7 @@
 
                         Last login: Sun Aug 23 19:27:50 2020 from 192.168.0.112
                     ```
-            - Installing kubeadm, kubelet and kubectl again
+            - The above steps failed to install. Installing kubeadm, kubelet and kubectl again
                 ```
                     cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
                     [kubernetes]
@@ -273,10 +273,158 @@
                     sudo systemctl enable --now kubelet
                     sudo yum install -y ipvsadm
                 ```
+            - run start_master.sh
+                ```
+                [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# sh start_master.sh
+                PING green (192.168.0.118) 56(84) bytes of data.
+                64 bytes from green (192.168.0.118): icmp_seq=1 ttl=64 time=0.627 ms
 
+                --- green ping statistics ---
+                1 packets transmitted, 1 received, 0% packet loss, time 0ms
+                rtt min/avg/max/mdev = 0.627/0.627/0.627/0.000 ms
+                PING blue (192.168.0.65) 56(84) bytes of data.
+                64 bytes from blue (192.168.0.65): icmp_seq=1 ttl=64 time=0.440 ms
 
+                --- blue ping statistics ---
+                1 packets transmitted, 1 received, 0% packet loss, time 0ms
+                rtt min/avg/max/mdev = 0.440/0.440/0.440/0.000 ms
+                PING master (192.168.0.112) 56(84) bytes of data.
+                64 bytes from master (192.168.0.112): icmp_seq=1 ttl=64 time=0.027 ms
 
-            ```
-                yum -y install --enablerepo=updates-testing kubernetes kubeadm
-                yum -y install etcd iptables
-            ```
+                --- master ping statistics ---
+                1 packets transmitted, 1 received, 0% packet loss, time 0ms
+                rtt min/avg/max/mdev = 0.027/0.027/0.027/0.000 ms
+                Redirecting to /bin/systemctl start rngd.service
+                [reset] Reading configuration from the cluster...
+                [reset] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+                [preflight] Running pre-flight checks
+                [reset] Removing info for node "ecs-1f5b-0002-7eea" from the ConfigMap "kubeadm-config" in the "kube-system" Namespace
+                {"level":"warn","ts":"2020-08-23T21:16:14.957+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:15.011+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:15.121+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:15.335+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:15.754+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:16.589+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:18.300+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:21.522+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:28.023+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:16:40.948+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                {"level":"warn","ts":"2020-08-23T21:17:07.319+0800","caller":"clientv3/retry_interceptor.go:61","msg":"retrying of unary invoker failed","target":"endpoint://client-9cf3c37f-55e8-4f90-a280-cff2d43fbb08/192.168.0.112:2379","attempt":0,"error":"rpc error: code = Unknown desc = etcdserver: re-configuration failed due to not enough started members"}
+                W0823 21:17:07.319997   16144 removeetcdmember.go:61] [reset] failed to remove etcd member: etcdserver: re-configuration failed due to not enough started members
+                .Please manually remove this etcd member using etcdctl
+                [reset] Stopping the kubelet service
+                [reset] Unmounting mounted directories in "/var/lib/kubelet"
+                [reset] Deleting contents of config directories: [/etc/kubernetes/manifests /etc/kubernetes/pki]
+                [reset] Deleting files: [/etc/kubernetes/admin.conf /etc/kubernetes/kubelet.conf /etc/kubernetes/bootstrap-kubelet.conf /etc/kubernetes/controller-manager.conf /etc/kubernetes/scheduler.conf]
+                [reset] Deleting contents of stateful directories: [/var/lib/etcd /var/lib/kubelet /var/lib/dockershim /var/run/kubernetes /var/lib/cni]
+
+                The reset process does not clean CNI configuration. To do so, you must remove /etc/cni/net.d
+
+                The reset process does not reset or clean up iptables rules or IPVS tables.
+                If you wish to reset iptables, you must do so manually by using the "iptables" command.
+
+                If your cluster was setup to utilize IPVS, run ipvsadm --clear (or similar)
+                to reset your system's IPVS tables.
+
+                The reset process does not clean your kubeconfig files and you must remove them manually.
+                Please, check the contents of the $HOME/.kube/config file.
+
+                starting with kubeadm init!!!
+
+                W0823 21:17:11.546273   16799 configset.go:202] WARNING: kubeadm cannot validate component configs for API groups [kubelet.config.k8s.io kubeproxy.config.k8s.io]
+                [init] Using Kubernetes version: v1.18.8
+                [preflight] Running pre-flight checks
+                        [WARNING Service-Docker]: docker service is not enabled, please run 'systemctl enable docker.service'
+                        [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+                [preflight] Pulling images required for setting up a Kubernetes cluster
+                [preflight] This might take a minute or two, depending on the speed of your internet connection
+                [preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+                [kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+                [kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+                [kubelet-start] Starting the kubelet
+                [certs] Using certificateDir folder "/etc/kubernetes/pki"
+                [certs] Generating "ca" certificate and key
+                [certs] Generating "apiserver" certificate and key
+                [certs] apiserver serving cert is signed for DNS names [ecs-1f5b-0002-7eea kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 192.168.0.112]
+                [certs] Generating "apiserver-kubelet-client" certificate and key
+                [certs] Generating "front-proxy-ca" certificate and key
+                [certs] Generating "front-proxy-client" certificate and key
+                [certs] Generating "etcd/ca" certificate and key
+                [certs] Generating "etcd/server" certificate and key
+                [certs] etcd/server serving cert is signed for DNS names [ecs-1f5b-0002-7eea localhost] and IPs [192.168.0.112 127.0.0.1 ::1]
+                [certs] Generating "etcd/peer" certificate and key
+                [certs] etcd/peer serving cert is signed for DNS names [ecs-1f5b-0002-7eea localhost] and IPs [192.168.0.112 127.0.0.1 ::1]
+                [certs] Generating "etcd/healthcheck-client" certificate and key
+                [certs] Generating "apiserver-etcd-client" certificate and key
+                [certs] Generating "sa" key and public key
+                [kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+                [kubeconfig] Writing "admin.conf" kubeconfig file
+                [kubeconfig] Writing "kubelet.conf" kubeconfig file
+                [kubeconfig] Writing "controller-manager.conf" kubeconfig file
+                [kubeconfig] Writing "scheduler.conf" kubeconfig file
+                [control-plane] Using manifest folder "/etc/kubernetes/manifests"
+                [control-plane] Creating static Pod manifest for "kube-apiserver"
+                [control-plane] Creating static Pod manifest for "kube-controller-manager"
+                W0823 21:17:17.094172   16799 manifests.go:225] the default kube-apiserver authorization-mode is "Node,RBAC"; using "Node,RBAC"
+                [control-plane] Creating static Pod manifest for "kube-scheduler"
+                W0823 21:17:17.095368   16799 manifests.go:225] the default kube-apiserver authorization-mode is "Node,RBAC"; using "Node,RBAC"
+                [etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+                [wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests". This can take up to 4m0s
+                [apiclient] All control plane components are healthy after 24.001969 seconds
+                [upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+                [kubelet] Creating a ConfigMap "kubelet-config-1.18" in namespace kube-system with the configuration for the kubelets in the cluster
+                [upload-certs] Skipping phase. Please see --upload-certs
+                [mark-control-plane] Marking the node ecs-1f5b-0002-7eea as control-plane by adding the label "node-role.kubernetes.io/master=''"
+                [mark-control-plane] Marking the node ecs-1f5b-0002-7eea as control-plane by adding the taints [node-role.kubernetes.io/master:NoSchedule]
+                [bootstrap-token] Using token: xep2ne.d42w9hjmqfngfaet
+                [bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+                [bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to get nodes
+                [bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+                [bootstrap-token] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+                [bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+                [bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+                [kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+                [addons] Applied essential addon: CoreDNS
+                [addons] Applied essential addon: kube-proxy
+
+                Your Kubernetes control-plane has initialized successfully!
+
+                To start using your cluster, you need to run the following as a regular user:
+
+                mkdir -p $HOME/.kube
+                sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+                sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+                You should now deploy a pod network to the cluster.
+                Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+                https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+                Then you can join any number of worker nodes by running the following on each as root:
+
+                kubeadm join 192.168.0.112:6443 --token xep2ne.d42w9hjmqfngfaet \
+                    --discovery-token-ca-cert-hash sha256:46399b907f659f69b2e023380c4875918e064762c6e4277d9e91c384c03aacd5
+                NAME                 STATUS     ROLES    AGE   VERSION
+                ecs-1f5b-0002-7eea   NotReady   master   4s    v1.18.8
+                serviceaccount/weave-net created
+                clusterrole.rbac.authorization.k8s.io/weave-net created
+                clusterrolebinding.rbac.authorization.k8s.io/weave-net created
+                role.rbac.authorization.k8s.io/weave-net created
+                rolebinding.rbac.authorization.k8s.io/weave-net created
+                daemonset.apps/weave-net created
+
+                ```
+                - There are still error
+                    - master node notready
+                    ```
+                    [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# kubectl get node
+                    NAME                 STATUS     ROLES    AGE   VERSION
+                    ecs-1f5b-0002-7eea   NotReady   master   83s   v1.18.8
+                    ```
+                    - scheduler and  controller-manager Unhealthy                    
+                    ```
+                    [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# kubectl get componentstatuses
+                    NAME                 STATUS      MESSAGE                                                                                     ERROR
+                    scheduler            Unhealthy   Get http://127.0.0.1:10251/healthz: dial tcp 127.0.0.1:10251: connect: connection refused
+                    controller-manager   Unhealthy   Get http://127.0.0.1:10252/healthz: dial tcp 127.0.0.1:10252: connect: connection refused
+                    etcd-0               Healthy     {"health":"true"}
+                    ```
