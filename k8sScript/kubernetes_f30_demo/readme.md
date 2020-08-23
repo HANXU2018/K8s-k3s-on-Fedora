@@ -572,6 +572,13 @@
                                             NAME                 STATUS   ROLES    AGE   VERSION
                                             ecs-1f5b-0002-7eea   Ready    master   68m   v1.18.8
                                             ```
+        - docker start with server
+            ```
+            systemctl enable docker
+            systemctl enable kubelet.service
+            systemctl start docker
+            systemctl start kubelet
+            ```
         - run start_cloud.sh
             ```
             [root@master kubernetes_f30_demo]# sh start_cloud.sh
@@ -850,4 +857,313 @@
                         ecs-1f5b-0002   Ready    <none>   13m   v1.18.8
                         master          Ready    master   14m   v1.18.4
                         ```
-                    
+            -  coredns-66bff467f8-8jx6x--0/1--ContainerCreating
+                - kubectl get pod --all-namespaces
+                    ```
+                    [root@master ~]# kubectl get pod --all-namespaces
+                    NAMESPACE              NAME                                         READY   STATUS              RESTARTS   AGE
+                    kube-system            coredns-66bff467f8-8jx6x                     0/1     ContainerCreating   0          147m
+                    kube-system            coredns-66bff467f8-rbsf6                     0/1     ContainerCreating   0          147m
+                    kube-system            etcd-master                                  1/1     Running             0          147m
+                    kube-system            kube-apiserver-master                        1/1     Running             0          147m
+                    kube-system            kube-controller-manager-master               1/1     Running             0          147m
+                    kube-system            kube-proxy-jdcsd                             1/1     Running             2          147m
+                    kube-system            kube-proxy-tqbxm                             1/1     Running             0          147m
+                    kube-system            kube-proxy-txl5p                             1/1     Running             1          147m
+                    kube-system            kube-scheduler-master                        1/1     Running             0          147m
+                    kube-system            weave-net-4jgcg                              2/2     Running             4          147m
+                    kube-system            weave-net-85kh2                              2/2     Running             3          147m
+                    kube-system            weave-net-mbwkd                              2/2     Running             0          147m
+                    kubernetes-dashboard   dashboard-metrics-scraper-66b49655d4-nw4bd   0/1     CrashLoopBackOff    29         127m
+                    kubernetes-dashboard   kubernetes-dashboard-74b4487bfc-8sn78        1/1     Running             0          127m
+                    ```
+                - kubectl describe po coredns-66bff467f8-8jx6x -n kube-system
+                    ```
+                    [root@master ~]# kubectl describe po coredns-66bff467f8-8jx6x -n kube-system
+                    Name:                 coredns-66bff467f8-8jx6x
+                    Namespace:            kube-system
+                    Priority:             2000000000
+                    Priority Class Name:  system-cluster-critical
+                    Node:                 master/192.168.0.112
+                    Start Time:           Mon, 24 Aug 2020 00:58:56 +0800
+                    Labels:               k8s-app=kube-dns
+                                        pod-template-hash=66bff467f8
+                    Annotations:          <none>
+                    Status:               Pending
+                    IP:
+                    IPs:                  <none>
+                    Controlled By:        ReplicaSet/coredns-66bff467f8
+                    Containers:
+                    coredns:
+                        Container ID:
+                        Image:         k8s.gcr.io/coredns:1.6.7
+                        Image ID:
+                        Ports:         53/UDP, 53/TCP, 9153/TCP
+                        Host Ports:    0/UDP, 0/TCP, 0/TCP
+                        Args:
+                        -conf
+                        /etc/coredns/Corefile
+                        State:          Waiting
+                        Reason:       ContainerCreating
+                        Ready:          False
+                        Restart Count:  0
+                        Limits:
+                        memory:  170Mi
+                        Requests:
+                        cpu:        100m
+                        memory:     70Mi
+                        Liveness:     http-get http://:8080/health delay=60s timeout=5s period=10s #success=1 #failure=5
+                        Readiness:    http-get http://:8181/ready delay=0s timeout=1s period=10s #success=1 #failure=3
+                        Environment:  <none>
+                        Mounts:
+                        /etc/coredns from config-volume (ro)
+                        /var/run/secrets/kubernetes.io/serviceaccount from coredns-token-vdr2h (ro)
+                    Conditions:
+                    Type              Status
+                    Initialized       True
+                    Ready             False
+                    ContainersReady   False
+                    PodScheduled      True
+                    Volumes:
+                    config-volume:
+                        Type:      ConfigMap (a volume populated by a ConfigMap)
+                        Name:      coredns
+                        Optional:  false
+                    coredns-token-vdr2h:
+                        Type:        Secret (a volume populated by a Secret)
+                        SecretName:  coredns-token-vdr2h
+                        Optional:    false
+                    QoS Class:       Burstable
+                    Node-Selectors:  kubernetes.io/os=linux
+                    Tolerations:     CriticalAddonsOnly
+                                    node-role.kubernetes.io/master:NoSchedule
+                                    node.kubernetes.io/not-ready:NoExecute for 300s
+                                    node.kubernetes.io/unreachable:NoExecute for 300s
+                    Events:
+                    Type     Reason                  Age                      From             Message
+                    ----     ------                  ----                     ----             -------
+                    Normal   SandboxChanged          12m (x7071 over 147m)    kubelet, master  Pod sandbox changed, it will b                                                                                                    e killed and re-created.
+                    Warning  FailedCreatePodSandBox  2m27s (x7585 over 147m)  kubelet, master  (combined from similar events)                                                                                                    : Failed to create pod sandbox: rpc error: code = Unknown desc = failed to set up sandbox container "a86aa2                                                                                                    126e5e196093c77097197b5ae5775907605e51ab8f8ffdab2232402476" network for pod "coredns-66bff467f8-8jx6x": net                                                                                                    workPlugin cni failed to set up pod "coredns-66bff467f8-8jx6x_kube-system" network: open /run/flannel/subne                                                                                                    t.env: no such file or directory
+
+                    ```
+                - fix  missing file /run/flannel/subnet.env
+                    ```
+                    echo"FLANNEL_NETWORK=10.244.0.0/16
+                    FLANNEL_SUBNET=10.224.0.1/24
+                    FLANNEL_MTU=1450
+                    FLANNEL_IPMASQ=true">/run/flannel/subnet.env
+                    ```
+                - kubectl get pod --all-namespaces
+                    ```
+                    [root@master ~]# kubectl get pod --all-namespaces
+                    NAMESPACE              NAME                                         READY   STATUS             RESTARTS   AGE
+                    kube-system            coredns-66bff467f8-8jx6x                     0/1     Running            0          150m
+                    kube-system            coredns-66bff467f8-rbsf6                     0/1     Running            0          150m
+                    kube-system            etcd-master                                  1/1     Running            0          150m
+                    kube-system            kube-apiserver-master                        1/1     Running            0          150m
+                    kube-system            kube-controller-manager-master               1/1     Running            0          150m
+                    kube-system            kube-proxy-jdcsd                             1/1     Running            2          150m
+                    kube-system            kube-proxy-tqbxm                             1/1     Running            0          150m
+                    kube-system            kube-proxy-txl5p                             1/1     Running            1          150m
+                    kube-system            kube-scheduler-master                        1/1     Running            0          150m
+                    kube-system            weave-net-4jgcg                              2/2     Running            4          150m
+                    kube-system            weave-net-85kh2                              2/2     Running            3          150m
+                    kube-system            weave-net-mbwkd                              2/2     Running            0          150m
+                    kubernetes-dashboard   dashboard-metrics-scraper-66b49655d4-nw4bd   0/1     CrashLoopBackOff   30         130m
+                    kubernetes-dashboard   kubernetes-dashboard-74b4487bfc-8sn78        1/1     Running            0          130m
+                    ```
+                - kubectl describe po coredns-66bff467f8-8jx6x -n kube-system
+                    ```
+                    [root@master ~]# kubectl describe po coredns-66bff467f8-8jx6x -n kube-system
+                    Name:                 coredns-66bff467f8-8jx6x
+                    Namespace:            kube-system
+                    Priority:             2000000000
+                    Priority Class Name:  system-cluster-critical
+                    Node:                 master/192.168.0.112
+                    Start Time:           Mon, 24 Aug 2020 00:58:56 +0800
+                    Labels:               k8s-app=kube-dns
+                                        pod-template-hash=66bff467f8
+                    Annotations:          <none>
+                    Status:               Running
+                    IP:                   10.224.0.2
+                    IPs:
+                    IP:           10.224.0.2
+                    Controlled By:  ReplicaSet/coredns-66bff467f8
+                    Containers:
+                    coredns:
+                        Container ID:  docker://a342db1ad5e7f2f45200cbc3bbf6d8109482e50e9d2cc80d771269d54ad026c1
+                        Image:         k8s.gcr.io/coredns:1.6.7
+                        Image ID:      docker-pullable://k8s.gcr.io/coredns@sha256:2c8d61c46f484d881db43b34d13ca47a269336e576c81cf007ca740fa9ec0800
+                        Ports:         53/UDP, 53/TCP, 9153/TCP
+                        Host Ports:    0/UDP, 0/TCP, 0/TCP
+                        Args:
+                        -conf
+                        /etc/coredns/Corefile
+                        State:          Running
+                        Started:      Mon, 24 Aug 2020 03:29:26 +0800
+                        Ready:          False
+                        Restart Count:  0
+                        Limits:
+                        memory:  170Mi
+                        Requests:
+                        cpu:        100m
+                        memory:     70Mi
+                        Liveness:     http-get http://:8080/health delay=60s timeout=5s period=10s #success=1 #failure=5
+                        Readiness:    http-get http://:8181/ready delay=0s timeout=1s period=10s #success=1 #failure=3
+                        Environment:  <none>
+                        Mounts:
+                        /etc/coredns from config-volume (ro)
+                        /var/run/secrets/kubernetes.io/serviceaccount from coredns-token-vdr2h (ro)
+                    Conditions:
+                    Type              Status
+                    Initialized       True
+                    Ready             False
+                    ContainersReady   False
+                    PodScheduled      True
+                    Volumes:
+                    config-volume:
+                        Type:      ConfigMap (a volume populated by a ConfigMap)
+                        Name:      coredns
+                        Optional:  false
+                    coredns-token-vdr2h:
+                        Type:        Secret (a volume populated by a Secret)
+                        SecretName:  coredns-token-vdr2h
+                        Optional:    false
+                    QoS Class:       Burstable
+                    Node-Selectors:  kubernetes.io/os=linux
+                    Tolerations:     CriticalAddonsOnly
+                                    node-role.kubernetes.io/master:NoSchedule
+                                    node.kubernetes.io/not-ready:NoExecute for 300s
+                                    node.kubernetes.io/unreachable:NoExecute for 300s
+                    Events:
+                    Type     Reason                  Age                      From             Message
+                    ----     ------                  ----                     ----             -------
+                    Normal   SandboxChanged          20m (x7071 over 155m)    kubelet, master  Pod sandbox changed, it will be killed and re-created.
+                    Warning  FailedCreatePodSandBox  5m10s (x7841 over 154m)  kubelet, master  (combined from similar events): Failed to create pod sandbox: rpc error: code = Unknown desc = failed to set up sandbox container "54714b63e853684353864cfcdd451e39acc925518a6088cc5d7d506a30594e9f" network for pod "coredns-66bff467f8-8jx6x": networkPlugin cni failed to set up pod "coredns-66bff467f8-8jx6x_kube-system" network: open /run/flannel/subnet.env: no such file or directory
+                    Warning  Unhealthy               1s (x29 over 4m41s)      kubelet, master  Readiness probe failed: HTTP probe failed with statuscode: 503
+                    ```
+                - search coredns logs 
+                    ```
+                    for p in $(kubectl get pods --namespace=kube-system -l k8s-app=kube-dns -o name); do kubectl logs --namespace=kube-system $p; done
+                    ```
+                    the same error as [coredns/coredns/issues/How to resolve that issue ? Readiness probe failed: HTTP probe failed with statuscode: 503 #3411](https://github.com/coredns/coredns/issues/3411)
+                    - remove wrong dash-board
+                        ```
+                        kubernetes-dashboard   dashboard-metrics-scraper-66b49655d4-nw4bd   0/1     CrashLoopBackOff   30         130m
+                        kubernetes-dashboard   kubernetes-dashboard-74b4487bfc-8sn78        1/1     Running            0          130m
+                        ```
+                        - `kubectl delete deployment  dashboard-metrics-scraper  -n kubernetes-dashboard`
+                        - `kubectl delete deployment  kubernetes-dashboard  -n kubernetes-dashboard`
+                        ```
+                        [root@master ~]# kubectl get pod -n kubernetes-dashboard
+                        NAME                                         READY   STATUS             RESTARTS   AGE
+                        dashboard-metrics-scraper-66b49655d4-nw4bd   0/1     CrashLoopBackOff   40         3h5m
+                        kubernetes-dashboard-74b4487bfc-8sn78        1/1     Running            0          3h5m
+                        [root@master ~]# kubectl delete pod dashboard-metrics-scraper-66b49655d4-nw4bd -n kubernetes-dashboard
+                        pod "dashboard-metrics-scraper-66b49655d4-nw4bd" deleted
+                        [root@master ~]# kubectl delete pod kubernetes-dashboard-74b4487bfc-8sn78  -n kubernetes-dashboard
+                        pod "kubernetes-dashboard-74b4487bfc-8sn78" deleted
+                        [root@master ~]# kubectl get pod -n kubernetes-dashboard
+                        NAME                                         READY   STATUS              RESTARTS   AGE
+                        dashboard-metrics-scraper-66b49655d4-jc2hd   0/1     CrashLoopBackOff    1          24s
+                        kubernetes-dashboard-74b4487bfc-r2x4b        0/1     ContainerCreating   0          5s
+                        [root@master ~]# kubectl get deployment -n kubernetes-dashboard
+                        NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+                        dashboard-metrics-scraper   0/1     1            0           3h6m
+                        kubernetes-dashboard        1/1     1            1           3h6m
+                        [root@master ~]# kubectl delete deployment  dashboard-metrics-scraper  -n kubernetes-dashboard
+                        deployment.apps "dashboard-metrics-scraper" deleted
+                        [root@master ~]# kubectl delete deployment  kubernetes-dashboard  -n kubernetes-dashboard
+                        deployment.apps "kubernetes-dashboard" deleted
+                        [root@master ~]# kubectl get deployment -n kubernetes-dashboard
+                        No resources found in kubernetes-dashboard namespace.
+                        [root@master ~]# kubectl get pod -n kubernetes-dashboard
+                        No resources found in kubernetes-dashboard namespace.
+                        [root@master ~]# kubectl get pod -n --all-namespaces
+                        No resources found in --all-namespaces namespace.
+                        [root@master ~]# kubectl get pod --all-namespaces
+                        NAMESPACE     NAME                                   READY   STATUS             RESTARTS   AGE
+                        kube-system   coredns-66bff467f8-8jx6x               1/1     Running            0          3h28m
+                        kube-system   coredns-66bff467f8-rbsf6               1/1     Running            0          3h28m
+                        kube-system   etcd-master                            1/1     Running            0          3h28m
+                        kube-system   kube-apiserver-master                  1/1     Running            0          3h28m
+                        kube-system   kube-controller-manager-master         1/1     Running            0          3h28m
+                        kube-system   kube-proxy-jdcsd                       1/1     Running            2          3h28m
+                        kube-system   kube-proxy-tqbxm                       1/1     Running            0          3h28m
+                        kube-system   kube-proxy-txl5p                       1/1     Running            1          3h27m
+                        kube-system   kube-scheduler-master                  1/1     Running            0          3h28m
+                        kube-system   kubernetes-dashboard-9bd985584-lzw95   0/1     CrashLoopBackOff   6          7m17s
+                        kube-system   weave-net-4jgcg                        2/2     Running            4          3h28m
+                        kube-system   weave-net-85kh2                        2/2     Running            3          3h27m
+                        kube-system   weave-net-mbwkd                        2/2     Running            0          3h28m
+                        ```
+                        - the coredns Status is Running but Still not healthy
+                        ```
+                        
+                        [root@master ~]# kubectl describe po coredns-66bff467f8-8jx6x -n kube-system
+                        Name:                 coredns-66bff467f8-8jx6x
+                        Namespace:            kube-system
+                        Priority:             2000000000
+                        Priority Class Name:  system-cluster-critical
+                        Node:                 master/192.168.0.112
+                        Start Time:           Mon, 24 Aug 2020 00:58:56 +0800
+                        Labels:               k8s-app=kube-dns
+                                            pod-template-hash=66bff467f8
+                        Annotations:          <none>
+                        Status:               Running
+                        IP:                   10.224.0.2
+                        IPs:
+                        IP:           10.224.0.2
+                        Controlled By:  ReplicaSet/coredns-66bff467f8
+                        Containers:
+                        coredns:
+                            Container ID:  docker://a342db1ad5e7f2f45200cbc3bbf6d8109482e50e9d2cc80d771269d54ad026c1
+                            Image:         k8s.gcr.io/coredns:1.6.7
+                            Image ID:      docker-pullable://k8s.gcr.io/coredns@sha256:2c8d61c46f484d881db43b34d13ca47a269336e576c81cf007ca740fa9ec0800
+                            Ports:         53/UDP, 53/TCP, 9153/TCP
+                            Host Ports:    0/UDP, 0/TCP, 0/TCP
+                            Args:
+                            -conf
+                            /etc/coredns/Corefile
+                            State:          Running
+                            Started:      Mon, 24 Aug 2020 03:29:26 +0800
+                            Ready:          True
+                            Restart Count:  0
+                            Limits:
+                            memory:  170Mi
+                            Requests:
+                            cpu:        100m
+                            memory:     70Mi
+                            Liveness:     http-get http://:8080/health delay=60s timeout=5s period=10s #success=1 #failure=5
+                            Readiness:    http-get http://:8181/ready delay=0s timeout=1s period=10s #success=1 #failure=3
+                            Environment:  <none>
+                            Mounts:
+                            /etc/coredns from config-volume (ro)
+                            /var/run/secrets/kubernetes.io/serviceaccount from coredns-token-vdr2h (ro)
+                        Conditions:
+                        Type              Status
+                        Initialized       True
+                        Ready             True
+                        ContainersReady   True
+                        PodScheduled      True
+                        Volumes:
+                        config-volume:
+                            Type:      ConfigMap (a volume populated by a ConfigMap)
+                            Name:      coredns
+                            Optional:  false
+                        coredns-token-vdr2h:
+                            Type:        Secret (a volume populated by a Secret)
+                            SecretName:  coredns-token-vdr2h
+                            Optional:    false
+                        QoS Class:       Burstable
+                        Node-Selectors:  kubernetes.io/os=linux
+                        Tolerations:     CriticalAddonsOnly
+                                        node-role.kubernetes.io/master:NoSchedule
+                                        node.kubernetes.io/not-ready:NoExecute for 300s
+                                        node.kubernetes.io/unreachable:NoExecute for 300s
+                        Events:
+                        Type     Reason     Age                  From             Message
+                        ----     ------     ----                 ----             -------
+                        Warning  Unhealthy  20m (x239 over 60m)  kubelet, master  Readiness probe failed: HTTP probe failed with statuscode: 503
+
+                        ```
