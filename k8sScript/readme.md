@@ -16,8 +16,9 @@
 - `yum -y install etcd iptables`
 - DNS config
     ```
-    echo "192.168.0.153 fed-master
-    192.168.0.139 fed-node" >> /etc/hosts
+    echo "192.168.0.112 master
+    192.168.0.65 blue
+    192.168.0.118 green" >> /etc/hosts
     ```
 -  config /etc/kubernetes/config
     ```
@@ -35,3 +36,4 @@
     systemctl disable iptables-services firewalld
     systemctl stop iptables-services firewalld
     ```
+

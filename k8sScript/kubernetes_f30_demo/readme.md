@@ -148,3 +148,114 @@
             Web console: https://host-192-168-0-118:9090/ or https://192.168.0.118:9090/
 
         ```
+        - Installing kubeadm
+            - Letting iptables see bridged traffic
+                ```
+                    cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+                    net.bridge.bridge-nf-call-ip6tables = 1
+                    net.bridge.bridge-nf-call-iptables = 1
+                    EOF
+                    sudo sysctl --system
+                ```
+            - Installing runtime
+                - `curl -fsSL https://get.docker.com | bash -s docker`
+            - start docker
+                ```
+                systemctl daemon-reload
+                systemctl restart docker.service
+                ```
+            - Installing kubeadm, kubelet and kubectl
+                - Install CNI plugins (required for most pod network):
+                    ```
+                        CNI_VERSION="v0.8.2"
+                        sudo mkdir -p /opt/cni/bin
+                        curl -L "https://github.com/containernetworking/plugins/releases/download/${CNI_VERSION}/cni-plugins-linux-amd64-${CNI_VERSION}.tgz" | sudo tar -C /opt/cni/bin -xz
+                    ```
+                - Define the directory to download command files
+                    ```
+                        DOWNLOAD_DIR=/usr/local/bin
+                        sudo mkdir -p $DOWNLOAD_DIR
+                    ```
+                - Install crictl (required for kubeadm / Kubelet Container Runtime Interface (CRI))
+                    ```
+                        CRICTL_VERSION="v1.17.0"
+                        curl -L "https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz" | sudo tar -C $DOWNLOAD_DIR -xz
+                    ```
+                - Install kubeadm, kubelet, kubectl and add a kubelet systemd service:
+                    ```
+                        RELEASE="$(curl -sSL https://dl.k8s.io/release/stable.txt)"
+                        cd $DOWNLOAD_DIR
+                        sudo curl -L --remote-name-all https://storage.googleapis.com/kubernetes-release/release/${RELEASE}/bin/linux/amd64/{kubeadm,kubelet,kubectl}
+                        sudo chmod +x {kubeadm,kubelet,kubectl}
+
+                        RELEASE_VERSION="v0.2.7"
+                        curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubelet/lib/systemd/system/kubelet.service" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service
+                        sudo mkdir -p /etc/systemd/system/kubelet.service.d
+                        curl -sSL "https://raw.githubusercontent.com/kubernetes/release/${RELEASE_VERSION}/cmd/kubepkg/templates/latest/deb/kubeadm/10-kubeadm.conf" | sed "s:/usr/bin:${DOWNLOAD_DIR}:g" | sudo tee /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+                    ```
+                - Enable and start kubelet:
+                    ```
+                        systemctl enable --now kubelet
+                    ```
+            - run 
+                - log
+                    ```
+                        [root@ecs-1f5b-0002-7eea kubernetes_f30_demo]# sh start_cloud.sh
+                        PING green (192.168.0.118) 56(84) bytes of data.
+                        64 bytes from green (192.168.0.118): icmp_seq=1 ttl=64 time=0.679 ms
+
+                        --- green ping statistics ---
+                        1 packets transmitted, 1 received, 0% packet loss, time 0ms
+                        rtt min/avg/max/mdev = 0.679/0.679/0.679/0.000 ms
+                        PING blue (192.168.0.65) 56(84) bytes of data.
+                        64 bytes from blue (192.168.0.65): icmp_seq=1 ttl=64 time=0.494 ms
+
+                        --- blue ping statistics ---
+                        1 packets transmitted, 1 received, 0% packet loss, time 0ms
+                        rtt min/avg/max/mdev = 0.494/0.494/0.494/0.000 ms
+                        PING master (192.168.0.112) 56(84) bytes of data.
+                        64 bytes from master (192.168.0.112): icmp_seq=1 ttl=64 time=0.023 ms
+
+                        --- master ping statistics ---
+                        1 packets transmitted, 1 received, 0% packet loss, time 0ms
+                        rtt min/avg/max/mdev = 0.023/0.023/0.023/0.000 ms
+                        Redirecting to /bin/systemctl start rngd.service
+                        bash: /usr/local/bin/kubeadm: cannot execute binary file: Exec format error
+                        bash: ipvsadm: command not found
+
+                        starting with kubeadm init!!!
+
+                        bash: /usr/local/bin/kubeadm: cannot execute binary file: Exec format error
+                        scp: /etc/kubernetes/admin.conf: No such file or directory
+                        chown: cannot access '/root/.kube/config': No such file or directory
+                        start_cloud.sh: line 42: /usr/local/bin/kubectl: cannot execute binary file: Exec format erro                                                                                                                  r
+
+                        Checking master
+
+                        start_cloud.sh: line 49: /usr/local/bin/kubectl: cannot execute binary file: Exec format erro                                                                                                                  r
+                        master ready...
+                        start_cloud.sh: line 56: /usr/local/bin/kubectl: cannot execute binary file: Exec format erro                                                                                                                  r
+                        cp: cannot stat '/etc/kubernetes/admin.conf': No such file or directory
+                        bash: /usr/local/bin/kubeadm: cannot execute binary file: Exec format error
+                        Using:
+                        bash: kubeadm: command not found
+                        setenforce: SELinux is disabled
+                        bash: ipvsadm: command not found
+                        bash: kubeadm: command not found
+                        setenforce: SELinux is disabled
+                        bash: ipvsadm: command not found
+
+                                Welcome to Huawei Cloud Service
+
+                        Web console: https://host-192-168-0-118:9090/ or https://192.168.0.118:9090/
+
+                        Last login: Sun Aug 23 19:27:50 2020 from 192.168.0.112
+                    ```
+
+
+
+
+            ```
+                yum -y install --enablerepo=updates-testing kubernetes kubeadm
+                yum -y install etcd iptables
+            ```
