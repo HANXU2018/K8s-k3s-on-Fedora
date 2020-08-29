@@ -38,9 +38,9 @@ ssh master systemctl restart docker.service
 ssh master curl -sLS https://get.k3sup.dev | sh
 #k3sup is a tool for installing K3S
 #install k3s server
-ssh master export SERVER_IP=$MASTER_IP
-ssh master export USER=root
-ssh master k3sup install --ip $SERVER_IP --user $USER
+echo "master install"
+
+ssh master k3sup install --ip $MASTER_IP --user root
 
 #Install K3S remotely using k3sup
 #install docker
@@ -50,16 +50,14 @@ ssh blue curl -fsSL https://get.docker.com | bash -s docker
 #start docker
 ssh blue systemctl daemon-reload
 ssh blue systemctl restart docker.service
-
+echo "blue install"
 #install k3sup
 ssh blue curl -sLS https://get.k3sup.dev | sh
 # install k3s agent blue
-ssh blue export SERVER_IP=$MASTER_IP
-ssh blue export AGENT_IP=$BLUE_IP
-ssh blue export USER=root
-k3sup join --ip $AGENT_IP --server-ip $SERVER_IP --user $USER
-# Install K3S remotely using k3sup
 
+k3sup join --ip $BLUE_IP --server-ip $MASTER_IP --user root
+# Install K3S remotely using k3sup
+echo "green install"
 #Install K3S remotely using k3sup
 #install docker
 ssh green curl -fsSL https://get.docker.com | bash -s docker
@@ -72,8 +70,5 @@ ssh green systemctl restart docker.service
 #install k3sup
 ssh green curl -sLS https://get.k3sup.dev | sh
 # install k3s agent blue
-ssh green export SERVER_IP=$MASTER_IP
-ssh green export AGENT_IP=$GREEN_IP
-ssh green export USER=root
-k3sup join --ip $AGENT_IP --server-ip $SERVER_IP --user $USER
+k3sup join --ip $GREEN_IP --server-ip $MASTER_IP --user root
 # Install K3S remotely using k3sup
