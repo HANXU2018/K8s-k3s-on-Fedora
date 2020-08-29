@@ -38,7 +38,7 @@ ssh master systemctl restart docker.service
 ssh master curl -sLS https://get.k3sup.dev | sh
 k3sup is a tool for installing K3S
 # install k3s server
-ssh master export SERVER_IP=master
+ssh master export SERVER_IP=$MASTER_IP
 ssh master export USER=root
 ssh master k3sup install --ip $SERVER_IP --user $USER
 
@@ -55,8 +55,8 @@ ssh blue systemctl restart docker.service
 ssh blue curl -sLS https://get.k3sup.dev | sh
 k3sup is a tool for installing K3S
 # install k3s agent blue
-ssh blue export SERVER_IP=master
-ssh blue export AGENT_IP=blue
+ssh blue export SERVER_IP=$MASTER_IP
+ssh blue export AGENT_IP=$BLUE_IP
 ssh blue export USER=root
 k3sup join --ip $AGENT_IP --server-ip $SERVER_IP --user $USER
 # Install K3S remotely using k3sup
@@ -74,8 +74,8 @@ ssh green systemctl restart docker.service
 ssh green curl -sLS https://get.k3sup.dev | sh
 k3sup is a tool for installing K3S
 # install k3s agent blue
-ssh green export SERVER_IP=master
-ssh green export AGENT_IP=blue
+ssh green export SERVER_IP=$MASTER_IP
+ssh green export AGENT_IP=$GREEN_IP
 ssh green export USER=root
 k3sup join --ip $AGENT_IP --server-ip $SERVER_IP --user $USER
 # Install K3S remotely using k3sup
