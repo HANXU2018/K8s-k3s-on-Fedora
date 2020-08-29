@@ -5,10 +5,10 @@ echo "$MASTER_IP master
         $BLUE_IP blue
         $GREEN_IP green" >> /etc/hosts
 
-ssh-keygen -t rsa -C "startk3s@test.com"
-yes|ssh-copy-id root@master
-yes|ssh-copy-id root@blue
-yes|ssh-copy-id root@green
+echo -e "\n\n\n"|ssh-keygen -t rsa -C "startk3s@test.com"
+echo yes|ssh-copy-id root@master
+echo yes|ssh-copy-id root@blue
+echo yes|ssh-copy-id root@green
 
 ping -c 1 -w 10 green
 if [ $? -ne 0 ]; then
