@@ -1,3 +1,12 @@
+echo "$MASTER_IP master
+        $BLUE_IP blue
+        $GREEN_IP green" >> /etc/hosts
+
+ssh-keygen -t rsa -C "startk3s@test.com"
+ssh-copy-id root@master
+ssh-copy-id root@blue
+ssh-copy-id root@green
+
 ping -c 1 -w 10 green
 if [ $? -ne 0 ]; then
   echo "Node: green not up, please check..."
