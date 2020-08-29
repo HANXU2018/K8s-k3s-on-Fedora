@@ -1,3 +1,6 @@
+export MASTER_IP=192.168.0.212
+export BLUE_IP=192.168.0.225
+export GREEN_IP=192.168.0.189
 echo "$MASTER_IP master
         $BLUE_IP blue
         $GREEN_IP green" >> /etc/hosts
