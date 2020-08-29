@@ -56,7 +56,8 @@ Fedora 29 64bit with ARM
         systemctl enable docker
         systemctl start docker
         ```
-- The above steps failed to install. Installing kubeadm, kubelet and kubectl again
+-  Installing kubeadm  kubectl ipvsadm  kubernetes-cni and kubelet
+    - only master install kubelet
     install kubelet kubeadm kubectl ipvsadm
     ```
     cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
@@ -143,4 +144,6 @@ Fedora 29 64bit with ARM
                 kube-system   weave-net-vrkx2                  2/2     Running   0          89s
                 ```
         - demo test
-            
+            - glone script
+                - `git clone https://github.com/jfclere/tomcat-openshift.git`
+                - `cd tomcat-openshift`
