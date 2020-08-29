@@ -25,7 +25,7 @@ if [ $? -ne 0 ]; then
   echo "Node: master (self) not up, please check..."
   exit 1
 fi
-
+ssh master hostnamectl set-hostname master
 #install docker
 ssh master curl -fsSL https://get.docker.com | bash -s docker
 # As a container, Docker is installed on all servers using installation scripts
@@ -43,6 +43,7 @@ echo "master install"
 ssh master k3sup install --ip $MASTER_IP --user root
 
 #Install K3S remotely using k3sup
+ssh blue hostnamectl set-hostname blue
 #install docker
 ssh blue curl -fsSL https://get.docker.com | bash -s docker
 # As a container, Docker is installed on all servers using installation scripts
@@ -59,6 +60,7 @@ k3sup join --ip $BLUE_IP --server-ip $MASTER_IP --user root
 # Install K3S remotely using k3sup
 echo "green install"
 #Install K3S remotely using k3sup
+ssh green hostnamectl set-hostname green
 #install docker
 ssh green curl -fsSL https://get.docker.com | bash -s docker
 # As a container, Docker is installed on all servers using installation scripts
@@ -72,3 +74,8 @@ ssh green curl -sLS https://get.k3sup.dev | sh
 # install k3s agent blue
 k3sup join --ip $GREEN_IP --server-ip $MASTER_IP --user root
 # Install K3S remotely using k3sup
+
+echo ""
+echo "Checking nodes"
+echo ""
+kubectl get nodes
