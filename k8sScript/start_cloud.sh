@@ -53,8 +53,8 @@ echo yes|ssh-copy-id root@green
 fi
 
 
-ssh master if [ $(hostname) != "master" ]; then hostnamectl set-hostname master  ;fi
-
+#ssh master if [ $(hostname) != "master" ]; then hostnamectl set-hostname master  ;fi
+ssh master hostnamectl set-hostname master
 #install docker
 ssh master curl -fsSL https://get.docker.com | bash -s docker
 # As a container, Docker is installed on all servers using installation scripts
