@@ -1,30 +1,59 @@
 export MASTER_IP=192.168.0.212
 export BLUE_IP=192.168.0.225
 export GREEN_IP=192.168.0.189
-echo "$MASTER_IP master
-        $BLUE_IP blue
-        $GREEN_IP green" >> /etc/hosts
-
-echo -e "\n\n\n"|ssh-keygen -t rsa -C "startk3s@test.com"
-echo yes|ssh-copy-id root@master
-echo yes|ssh-copy-id root@blue
-echo yes|ssh-copy-id root@green
 
 ping -c 1 -w 10 green
 if [ $? -ne 0 ]; then
-  echo "Node: green not up, please check..."
-  exit 1
+  echo "$BLUE_IP green">>/etc/hosts
+  ping -c 1 -w 10 green
+  if [ $? -ne 0 ]; then
+    echo "Node: green not up, please check..."
+    exit 1
+  fi
 fi
+
 ping -c 1 -w 10 blue
 if [ $? -ne 0 ]; then
-  echo "Node: blue not up, please check..."
-  exit 1
+  echo "$BLUE_IP blue">>/etc/hosts
+  ping -c 1 -w 10 blue
+  if [ $? -ne 0 ]; then
+    echo "Node: blue not up, please check..."
+    exit 1
+  fi
 fi
+
 ping -c 1 -w 10 master
 if [ $? -ne 0 ]; then
-  echo "Node: master (self) not up, please check..."
-  exit 1
+  echo "$MASTER_IP master">>/etc/hosts
+  ping -c 1 -w 10 master
+  if [ $? -ne 0 ]; then
+    echo "Node: master (self) not up, please check..."
+    exit 1
+  fi
 fi
+
+echo -e "\n\n\n"|ssh-keygen -t rsa -C "startk3s@tests.com"
+
+echo -e "$MASTER_IP \c" && ssh master -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
+if [ $? -eq 0 ]; then echo"we can alredy ssh to the  master nodes" 
+else
+echo yes|ssh-copy-id root@master
+fi
+
+echo -e "$BLUE_IP \c" && ssh blue -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
+if [ $? -eq 0 ];then echo"we can alredy ssh to the  blue nodes" 
+else
+echo yes|ssh-copy-id root@blue
+fi
+
+echo -e "$GREEN_IP \c" && ssh green -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
+if [ $? -eq 0 ];then echo"we can alredy ssh to the  green nodes" 
+else
+echo yes|ssh-copy-id root@green
+fi
+
+
+#ssh master if [ $(hostname) != "master" ]; then hostnamectl set-hostname master  ;fi
 ssh master hostnamectl set-hostname master
 #install docker
 ssh master curl -fsSL https://get.docker.com | bash -s docker
