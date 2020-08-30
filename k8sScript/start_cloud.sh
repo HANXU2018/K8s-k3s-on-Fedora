@@ -10,7 +10,6 @@ if [ $? -ne 0 ]; then
     echo "Node: green not up, please check..."
     exit 1
   fi
-  exit 1
 fi
 
 ping -c 1 -w 10 blue
@@ -21,7 +20,6 @@ if [ $? -ne 0 ]; then
     echo "Node: blue not up, please check..."
     exit 1
   fi
-  exit 1
 fi
 
 ping -c 1 -w 10 master
@@ -32,7 +30,6 @@ if [ $? -ne 0 ]; then
     echo "Node: master (self) not up, please check..."
     exit 1
   fi
-  exit 1
 fi
 
 echo -e "\n\n\n"|ssh-keygen -t rsa -C "startk3s@tests.com"
@@ -40,19 +37,16 @@ echo -e "\n\n\n"|ssh-keygen -t rsa -C "startk3s@tests.com"
 ssh master 
 if [ $? -ne 0 ]; then
   echo yes|ssh-copy-id root@master
-  exit 1
 fi
 
 ssh blue 
 if [ $? -ne 0 ]; then
   echo yes|ssh-copy-id root@blue
-  exit 1
 fi
 
 ssh green 
 if [ $? -ne 0 ]; then
   echo yes|ssh-copy-id root@green
-  exit 1
 fi
 
 ssh master if [ $(hostname) != "master" ]; then hostnamectl set-hostname master  ;fi
