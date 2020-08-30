@@ -35,19 +35,19 @@ fi
 echo -e "\n\n\n"|ssh-keygen -t rsa -C "startk3s@tests.com"
 
 echo -e "$MASTER_IP \c" && ssh master -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
-if [ ?=0]; then echo"we can alredy ssh to the  master nodes" 
+if [ $? -eq 0]; then echo"we can alredy ssh to the  master nodes" 
 else
 echo yes|ssh-copy-id root@master
 fi
 
 echo -e "$BLUE_IP \c" && ssh blue -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
-if [ ?=0];then echo"we can alredy ssh to the  blue nodes" 
+if [ $? -eq 0];then echo"we can alredy ssh to the  blue nodes" 
 else
 echo yes|ssh-copy-id root@blue
 fi
 
 echo -e "$GREEN_IP \c" && ssh green -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
-if [ ?=0];then echo"we can alredy ssh to the  green nodes" 
+if [ $? -eq 0];then echo"we can alredy ssh to the  green nodes" 
 else
 echo yes|ssh-copy-id root@green
 fi
