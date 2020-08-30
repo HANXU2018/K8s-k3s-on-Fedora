@@ -34,20 +34,24 @@ fi
 
 echo -e "\n\n\n"|ssh-keygen -t rsa -C "startk3s@tests.com"
 
-ssh master 
-if [ $? -ne 0 ]; then
-  echo yes|ssh-copy-id root@master
+echo -e “$i \c” && ssh master -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
+if [ ?=0];thenecho&quot;?=0];then echo"we can alredy ssh to the  master nodes" 
+else
+echo yes|ssh-copy-id root@master
 fi
 
-ssh blue 
-if [ $? -ne 0 ]; then
-  echo yes|ssh-copy-id root@blue
+echo -e “$i \c” && ssh blue -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
+if [ ?=0];thenecho&quot;?=0];then echo"we can alredy ssh to the  blue nodes" 
+else
+echo yes|ssh-copy-id root@blue
 fi
 
-ssh green 
-if [ $? -ne 0 ]; then
-  echo yes|ssh-copy-id root@green
+echo -e “$i \c” && ssh green -o PreferredAuthentications=publickey -o StrictHostKeyChecking=no “date” > /dev/null 2>&1
+if [ ?=0];thenecho&quot;?=0];then echo"we can alredy ssh to the  green nodes" 
+else
+echo yes|ssh-copy-id root@green
 fi
+
 
 ssh master if [ $(hostname) != "master" ]; then hostnamectl set-hostname master  ;fi
 
