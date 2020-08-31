@@ -94,6 +94,7 @@ EOF
 ssh master yum clean all
 ssh master yum install kubernetes-cni -y
 
+ssh master mkdir /run/flannel/
 ssh master echo"FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
 FLANNEL_MTU=1450
@@ -149,7 +150,7 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cl
 EOF
 ssh blue yum clean all
 ssh blue yum install kubernetes-cni -y
-
+ssh blue mkdir /run/flannel/
 ssh blue echo"FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
 FLANNEL_MTU=1450
@@ -202,7 +203,7 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cl
 EOF
 ssh green yum clean all
 ssh green yum install kubernetes-cni -y
-
+ssh green mkdir /run/flannel/
 ssh green echo"FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
 FLANNEL_MTU=1450
