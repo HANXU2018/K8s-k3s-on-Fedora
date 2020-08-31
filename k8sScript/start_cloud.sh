@@ -4,7 +4,7 @@ export GREEN_IP=192.168.0.189
 
 ping -c 1 -w 10 green
 if [ $? -ne 0 ]; then
-  echo "$BLUE_IP green">>/etc/hosts
+  echo "$GREEN_IP green">>/etc/hosts
   ping -c 1 -w 10 green
   if [ $? -ne 0 ]; then
     echo "Node: green not up, please check..."
@@ -134,7 +134,7 @@ EOF
 ssh blue sudo setenforce 0
 ssh blue sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-ssh blue sudo yum install -y kubelet kubeadm  --disableexcludes=kubernetes
+ssh blue sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
 ssh blue sudo systemctl enable --now kubelet
 ssh blue sudo yum install -y ipvsadm
@@ -187,7 +187,7 @@ EOF
 ssh green sudo setenforce 0
 ssh green sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-ssh green sudo yum install -y kubelet kubeadm  --disableexcludes=kubernetes
+ssh green sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
 ssh green sudo systemctl enable --now kubelet
 ssh green sudo yum install -y ipvsadm

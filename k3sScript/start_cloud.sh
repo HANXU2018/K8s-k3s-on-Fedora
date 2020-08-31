@@ -4,7 +4,7 @@ export GREEN_IP=192.168.0.189
 
 ping -c 1 -w 10 green
 if [ $? -ne 0 ]; then
-  echo "$BLUE_IP green">>/etc/hosts
+  echo "$GREEN_IP green">>/etc/hosts
   ping -c 1 -w 10 green
   if [ $? -ne 0 ]; then
     echo "Node: green not up, please check..."
