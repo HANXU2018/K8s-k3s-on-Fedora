@@ -52,31 +52,13 @@ else
 echo yes|ssh-copy-id root@green
 fi
 
-
-#ssh master if [ $(hostname) != "master" ]; then hostnamectl set-hostname master  ;fi
 ssh master hostnamectl set-hostname master
-#install docker
-#ssh master curl -fsSL https://get.docker.com | bash -s docker
-#ssh master git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
-#ssh master cd ~/K8s-k3s-on-Fedora/getdocker
-#ssh master sh install.sh
 ssh master curl -fsSL https://get.docker.com -o get-docker.sh
 ssh master sh get-docker.sh
 
 # As a container, Docker is installed on all servers using installation scripts
 
 #start docker
-
-# ssh master "cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-# [kubernetes]
-# name=Kubernetes
-# baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
-# enabled=1
-# gpgcheck=1
-# repo_gpgcheck=1
-# gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-# exclude=kubelet kubeadm kubectl
-# EOF"
 
 scp kubernetes.repo root@master:/etc/yum.repos.d/
 # Set SELinux in permissive mode (effectively disabling it)
@@ -87,18 +69,6 @@ ssh master sudo yum install -y kubelet kubeadm kubectl  kubernetes-cni --disable
 
 ssh master sudo systemctl enable --now kubelet
 ssh master sudo yum install -y ipvsadm
-
-# ssh master "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-# [kubernetes]
-# name=Kubernetes
-# baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-aarch64
-# enabled=1
-# gpgcheck=1
-# repo_gpgcheck=1
-# gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-# EOF"
-# ssh master yum clean all
-# ssh master yum install kubernetes-cni -y
 
 ssh master mkdir /run/flannel/
 ssh master echo "FLANNEL_NETWORK=10.244.0.0/16
@@ -115,15 +85,9 @@ ssh master systemctl start kubelet
 
 # node
 
-
-#ssh blue if [ $(hostname) != "blue" ]; then hostnamectl set-hostname blue  ;fi
 ssh blue hostnamectl set-hostname blue
 #install docker
-#ssh blue curl -fsSL https://get.docker.com | bash -s docker
 
-#ssh blue git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
-#ssh blue cd ~/K8s-k3s-on-Fedora/getdocker
-#ssh blue sh install.sh
 ssh blue curl -fsSL https://get.docker.com -o get-docker.sh
 ssh blue sh get-docker.sh
 
@@ -132,20 +96,6 @@ ssh blue sh get-docker.sh
 #start docker
 ssh blue systemctl daemon-reload
 ssh blue systemctl restart docker.service
-
-# ssh blue "cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-# [kubernetes]
-# name=Kubernetes
-# baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
-# enabled=1
-# gpgcheck=1
-# repo_gpgcheck=1
-# gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-# exclude=kubelet kubeadm kubectl
-# EOF"
-# Set SELinux in permissive mode (effectively disabling it)
-# ssh blue sudo setenforce 0
-# ssh blue sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
 scp kubernetes.repo root@blue:/etc/yum.repos.d/
 # Set SELinux in permissive mode (effectively disabling it)
@@ -157,18 +107,6 @@ ssh blue sudo yum install -y kubelet kubeadm kubectl  kubernetes-cni --disableex
 ssh blue sudo systemctl enable --now kubelet
 ssh blue sudo yum install -y ipvsadm
 
-# ssh blue "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-# [kubernetes]
-# name=Kubernetes
-# baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-aarch64
-# enabled=1
-# gpgcheck=1
-# repo_gpgcheck=1
-# gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-# EOF
-# "
-# ssh blue yum clean all
-# ssh blue yum install kubernetes-cni -y
 ssh blue mkdir /run/flannel/
 ssh blue echo "FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
@@ -183,14 +121,9 @@ ssh blue systemctl start docker
 ssh blue systemctl start kubelet
 
 
-#ssh green if [ $(hostname) != "green" ]; then hostnamectl set-hostname blue  ;fi
 ssh green hostnamectl set-hostname green
 #install docker
-#ssh green curl -fsSL https://get.docker.com | bash -s docker
 
-#ssh green git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
-#ssh green cd ~/K8s-k3s-on-Fedora/getdocker
-#ssh green sh install.sh
 
 ssh green curl -fsSL https://get.docker.com -o get-docker.sh
 ssh green sh get-docker.sh
@@ -202,21 +135,6 @@ ssh green sh get-docker.sh
 ssh green systemctl daemon-reload
 ssh green systemctl restart docker.service
 
-# ssh green "cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-# [kubernetes]
-# name=Kubernetes
-# baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
-# enabled=1
-# gpgcheck=1
-# repo_gpgcheck=1
-# gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-# exclude=kubelet kubeadm kubectl
-# EOF"
-# # Set SELinux in permissive mode (effectively disabling it)
-# ssh green sudo setenforce 0
-# ssh green sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
-
-# ssh green sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 scp kubernetes.repo root@green:/etc/yum.repos.d/
 # Set SELinux in permissive mode (effectively disabling it)
 ssh green sudo setenforce 0
@@ -228,17 +146,6 @@ ssh green sudo yum install -y kubelet kubeadm kubectl  kubernetes-cni --disablee
 ssh green sudo systemctl enable --now kubelet
 ssh green sudo yum install -y ipvsadm
 
-# ssh green "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
-# [kubernetes]
-# name=Kubernetes
-# baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-aarch64
-# enabled=1
-# gpgcheck=1
-# repo_gpgcheck=1
-# gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-# EOF"
-# ssh green yum clean all
-# ssh green yum install kubernetes-cni -y
 ssh green mkdir /run/flannel/
 ssh green echo "FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
