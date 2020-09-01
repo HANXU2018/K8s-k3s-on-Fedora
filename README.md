@@ -1,5 +1,23 @@
 # K8s-k3s-on-Fedora
 This is  one or at least start a prototype
+
+## One click setup script
+- k3s 
+    - [`k3sScript\start_cloud.sh`](https://github.com/HANXU2018/K8s-k3s-on-Fedora/tree/master/k3sScript)
+    - using step
+    ```
+        git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
+        cd K8s-k3s-on-Fedora/k3sScript
+        sh start_cloud.sh
+    ```
+- k8s
+    - [`k8sScript\start_cloud.sh`](https://github.com/HANXU2018/K8s-k3s-on-Fedora/tree/master/k8sScript)
+    - using step
+    ```
+        git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
+        cd K8s-k3s-on-Fedora/k8sScript
+        sh start_cloud.sh
+    ```
 ## installation steps
 - [k3s install in Fedora29](https://github.com/HANXU2018/K8s-k3s-on-Fedora/tree/master/k3sScript)
     - I used a virtual machine locally to simulate the Fedora32 environment for the installation
