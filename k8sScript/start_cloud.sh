@@ -58,7 +58,7 @@ ssh master hostnamectl set-hostname master
 #install docker
 #ssh master curl -fsSL https://get.docker.com | bash -s docker
 ssh master git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
-ssh master cd /K8s-k3s-on-Fedora/getdocker
+ssh master cd K8s-k3s-on-Fedora/getdocker
 ssh master sh install.sh
 
 
@@ -121,7 +121,7 @@ ssh blue hostnamectl set-hostname blue
 #ssh blue curl -fsSL https://get.docker.com | bash -s docker
 
 ssh blue git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
-ssh blue cd /K8s-k3s-on-Fedora/getdocker
+ssh blue cd K8s-k3s-on-Fedora/getdocker
 ssh blue sh install.sh
 
 # As a container, Docker is installed on all servers using installation scripts
@@ -180,7 +180,7 @@ ssh greem hostnamectl set-hostname blue
 #ssh green curl -fsSL https://get.docker.com | bash -s docker
 
 ssh green git clone https://github.com/HANXU2018/K8s-k3s-on-Fedora.git
-ssh green cd /K8s-k3s-on-Fedora/getdocker
+ssh green cd K8s-k3s-on-Fedora/getdocker
 ssh green sh install.sh
 
 # As a container, Docker is installed on all servers using installation scripts
