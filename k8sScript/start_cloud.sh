@@ -68,7 +68,7 @@ ssh master sh install.sh
 ssh master systemctl daemon-reload
 ssh master systemctl restart docker.service
 
-ssh master cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+ssh master "cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
@@ -77,7 +77,7 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
-EOF
+EOF"
 # Set SELinux in permissive mode (effectively disabling it)
 ssh master sudo setenforce 0
 ssh master sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
@@ -87,7 +87,7 @@ ssh master sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kuberne
 ssh master sudo systemctl enable --now kubelet
 ssh master sudo yum install -y ipvsadm
 
-ssh master cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+ssh master "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-aarch64
@@ -95,12 +95,12 @@ enabled=1
 gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-EOF
+EOF"
 ssh master yum clean all
 ssh master yum install kubernetes-cni -y
 
 ssh master mkdir /run/flannel/
-ssh master echo"FLANNEL_NETWORK=10.244.0.0/16
+ssh master echo "FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
 FLANNEL_MTU=1450
 FLANNEL_IPMASQ=true">/run/flannel/subnet.env
@@ -130,7 +130,7 @@ ssh blue sh install.sh
 ssh blue systemctl daemon-reload
 ssh blue systemctl restart docker.service
 
-ssh blue cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+ssh blue "cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
@@ -139,7 +139,7 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
-EOF
+EOF"
 # Set SELinux in permissive mode (effectively disabling it)
 ssh blue sudo setenforce 0
 ssh blue sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
@@ -149,7 +149,7 @@ ssh blue sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernete
 ssh blue sudo systemctl enable --now kubelet
 ssh blue sudo yum install -y ipvsadm
 
-ssh blue cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+ssh blue "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-aarch64
@@ -158,10 +158,11 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
+"
 ssh blue yum clean all
 ssh blue yum install kubernetes-cni -y
 ssh blue mkdir /run/flannel/
-ssh blue echo"FLANNEL_NETWORK=10.244.0.0/16
+ssh blue echo "FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
 FLANNEL_MTU=1450
 FLANNEL_IPMASQ=true">/run/flannel/subnet.env
@@ -189,7 +190,7 @@ ssh green sh install.sh
 ssh green systemctl daemon-reload
 ssh green systemctl restart docker.service
 
-ssh green cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+ssh green "cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
@@ -198,7 +199,7 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
-EOF
+EOF"
 # Set SELinux in permissive mode (effectively disabling it)
 ssh green sudo setenforce 0
 ssh green sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
@@ -208,7 +209,7 @@ ssh green sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernet
 ssh green sudo systemctl enable --now kubelet
 ssh green sudo yum install -y ipvsadm
 
-ssh green cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+ssh green "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-aarch64
@@ -216,11 +217,11 @@ enabled=1
 gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-EOF
+EOF"
 ssh green yum clean all
 ssh green yum install kubernetes-cni -y
 ssh green mkdir /run/flannel/
-ssh green echo"FLANNEL_NETWORK=10.244.0.0/16
+ssh green echo "FLANNEL_NETWORK=10.244.0.0/16
 FLANNEL_SUBNET=10.224.0.1/24
 FLANNEL_MTU=1450
 FLANNEL_IPMASQ=true">/run/flannel/subnet.env
