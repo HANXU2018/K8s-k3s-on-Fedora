@@ -184,7 +184,7 @@ ssh blue systemctl start kubelet
 
 
 #ssh green if [ $(hostname) != "green" ]; then hostnamectl set-hostname blue  ;fi
-ssh greem hostnamectl set-hostname blue
+ssh green hostnamectl set-hostname green
 #install docker
 #ssh green curl -fsSL https://get.docker.com | bash -s docker
 
