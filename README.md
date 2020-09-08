@@ -1,6 +1,6 @@
 # K8s-k3s-on-Fedora
 This is  one or at least start a prototype
-
+[![Page Views Count](https://badges.toozhao.com/badges/01EHNQCSK83F1NTKRM1JWKAQTW/green.svg)](https://badges.toozhao.com/badges/01EHNQCSK83F1NTKRM1JWKAQTW/green.svg "Get your own page views count badge on badges.toozhao.com")
 ## One click setup script
 - k3s 
     - [`k3sScript\start_cloud.sh`](https://github.com/HANXU2018/K8s-k3s-on-Fedora/tree/master/k3sScript)
